@@ -21,8 +21,8 @@ export default function Home() {
       <Counter />
       <ProductCategories />
       <Arrivals />
-      <AbouttTuk />
       <FeaturedProducts />
+      <AbouttTuk />
       <Vision />
       <OurDistribution />
       <ProductGuide />

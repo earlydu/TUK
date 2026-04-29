@@ -13,6 +13,8 @@ import {
   IconCheck,
   IconCertificate,
   IconMapPin,
+  IconBrandFacebookFilled,
+  IconBrandFacebook,
 } from "@tabler/icons-react";
 
 const Footer = () => {
@@ -65,6 +67,17 @@ const Footer = () => {
                   </div>
                 </Button>
               </Link>
+              <Link href="https://www.facebook.com/tukltd/" target="_blank">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className=" hover:bg-[#2e4472] rounded-md cursor-pointer"
+                >
+                  <div className="bg-[#2e4ea1] text-[#D1D5DB]  p-2 rounded-sm flex items-center justify-center">
+                    <IconBrandFacebook size={16} className="" />
+                  </div>
+                </Button>
+              </Link>
             </div>
           </div>
 
@@ -76,7 +89,7 @@ const Footer = () => {
 
             <div className="flex flex-col space-y-2 text-[#9CA3AF] text-sm font-inter">
               <Link href="/category?categoryId=41b19390-5260-43e8-8d0c-08312ee4e041">
-                RJ45 Connectors
+                SPEEDY RJ45
               </Link>
               <Link href="/category?categoryId=0d908864-f7de-4e86-8aa3-3f012e528785">
                 Multimedia Connectors
@@ -85,16 +98,19 @@ const Footer = () => {
                 Mini Media
               </Link>
               <Link href="/category?categoryId=3bb2c7a9-3f3e-4b9d-be7f-428caafab3d3">
-                Voice Cable
+                Plugs for Data and Voices
               </Link>
               <Link href="/category?categoryId=796cce52-c1ab-4af6-b6f1-2e8c974f522a">
                 PCB Mounts
               </Link>
-              <Link href="/category?categoryId=8993553c-c381-4df1-86ea-b277f6c30a09">
-                Modular Plugs
+              <Link href="/category?categoryId=73f5dda5-9a70-42c9-b07f-e42bebc57de6">
+                Tools
               </Link>
               <Link href="/category?categoryId=44aa2caf-8e5c-476f-96fa-3c14926f81c4">
-                Cable Management
+                Structured Cabling
+              </Link>
+              <Link href="/category?categoryId=049a6145-980d-4a0a-bd77-47610070e046">
+                UK Voice Connectivity
               </Link>
             </div>
           </div>
@@ -106,8 +122,8 @@ const Footer = () => {
             <div className="flex flex-col space-y-2 text-[#9CA3AF] text-sm font-inter">
               <Link href="/about">About TUK</Link>
               <Link href="/distributor-enquiry">Become a Distributor</Link>
-              <Link href="/distributor">Distributor</Link>
-              <Link href="/contact">Contact Us</Link>
+              <Link href="/distributor">TUK Distributor</Link>
+              <Link href="/contact">Contact Page</Link>
             </div>
           </div>
 

@@ -30,6 +30,17 @@ export default function Page() {
 
       {/* BREADCRUMB */}
       <div className="w-full bg-gray-100 border-b font-poppins">
+        <div
+          className="w-full h-60 text-center flex flex-col items-center justify-center gap-3 text-white"
+          style={{
+            background: "linear-gradient(to right, #141D3D, #364FA3)",
+          }}
+        >
+          <h1 className="text-4xl font-semibold">Categories</h1>
+          <p className="text-xl">
+            Explore our wide range of categories and Products
+          </p>
+        </div>
         <div className="max-w-6xl mx-auto px-4 py-3 text-sm text-gray-600 flex items-center gap-2">
           <Link href="/" className="hover:text-black">
             Home

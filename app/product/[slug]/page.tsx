@@ -48,7 +48,17 @@ export default async function Page({ params }: ProductPageProps) {
   return (
     <>
       <Header />
-
+      <div
+        className="w-full  h-56 font-poppins"
+        style={{
+          background: "linear-gradient(to right, #141D3D, #364FA3)",
+        }}
+      >
+        <h1 className="text-3xl font-semibold text-white text-center flex items-center justify-center h-full">
+          {product.name}
+        </h1>
+        <p className="text-white text-center">{product.description}</p>
+      </div>
       {/* ✅ Breadcrumb Start */}
       <div className="w-full bg-gray-50 font-poppins ">
         <div className="container mx-auto px-4 py-4 text-sm text-muted-foreground flex flex-wrap items-center gap-2">

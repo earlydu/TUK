@@ -78,9 +78,9 @@ export default function Page() {
     }
 
     // 3. Phone Validation (10 digits) with relevant message
-    const phoneRegex = /^\d{10}$/;
+    const phoneRegex = /^\d{13}$/;
     if (!phoneRegex.test(form.phone.replace(/\s/g, ""))) {
-      toast.error("Please enter a valid 10-digit phone number");
+      toast.error("Please enter a valid  phone number");
       return;
     }
 
@@ -124,6 +124,20 @@ export default function Page() {
       <Header />
 
       <section className="w-full font-poppins bg-muted/40">
+        <div
+          className="w-full h-60  text-white flex flex-col items-center justify-center gap-4 px-4
+          text-center"
+          style={{
+            background: "linear-gradient(to right, #141D3D, #364FA3)",
+          }}
+        >
+          <h1 className="text-4xl font-semibold">Request a Wholesale Quote</h1>
+          <p className="max-w-4xl">
+            TUK ltd provides high-quality, professional-grade cabling solutions
+            for global trade buyers and distributors. Fill our the form below to
+            recieve a custom quotation tailored to your business requirements.
+          </p>
+        </div>
         <div className="mx-auto max-w-6xl px-4 py-10 lg:py-16">
           {/* breadcrumb */}
           <p className="text-sm text-muted-foreground mb-6">
@@ -134,18 +148,6 @@ export default function Page() {
           </p>
 
           {/* title */}
-          <div className="max-w-xl mb-10">
-            <h1 className="text-2xl font-bold lg:text-3xl">
-              Request a Wholesale Quote
-            </h1>
-
-            <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-              TUK ltd provides high-quality, professional-grade cabling
-              solutions for global trade buyers and distributors. Fill our the
-              form below to recieve a custom quotation tailored to your business
-              requirements.
-            </p>
-          </div>
 
           {/* form */}
           <div className="bg-background border rounded-xl p-6 lg:p-10">
@@ -267,7 +269,9 @@ export default function Page() {
               </div>
               {/* textarea */}
               <div className="mt-6 space-y-2">
-                <label className="text-sm font-medium">Business Email</label>
+                <label className="text-sm font-medium">
+                  Additional Comments
+                </label>
 
                 <Textarea
                   name="requirement"
@@ -290,7 +294,7 @@ export default function Page() {
                 >
                   I agree to TUK ltd's{" "}
                   <span className="text-[#F97316] underline cursor-pointer">
-                  <Link href="/privacy-policy">  Privacy Policy</Link>
+                    <Link href="/privacy-policy"> Privacy Policy</Link>
                   </span>{" "}
                   and understand my data will be used to process this enquiry.
                 </label>

@@ -151,7 +151,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           <ul className="flex flex-col gap-2 font-poppins">
             {features.map((feature, idx) => (
               <li key={idx} className="flex items-start gap-2">
-                <IconCheck className="text-green-600 mt-1" size={18} />
+                <IconCheck className="text-green-600 mt-1 shrink-0" size={18} />
                 {feature.feature}
               </li>
             ))}

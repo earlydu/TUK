@@ -79,7 +79,14 @@ const OurDistribution = () => {
                     className="basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/6"
                   >
                     <div className="p-2">
-                      <div className="bg-[#F9FAFB] rounded-xl p-4 flex items-center justify-center hover:shadow-md transition h-24">
+                      <div
+                        className="bg-[#F9FAFB] rounded-xl p-4 flex items-center justify-center hover:shadow-md transition h-24 cursor-pointer"
+                        onClick={() => {
+                          const url =
+                            item.visitUrl || item.visiturl1 || item.website;
+                          if (url) window.open(url, "_blank");
+                        }}
+                      >
                         <div className="relative w-full h-16">
                           <Image
                             src={item.image || item.logo || "/image/img1.png"}

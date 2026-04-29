@@ -113,28 +113,28 @@ const ProductGuide = () => {
           >
             <input
               name="firstName"
-              placeholder="Enter First Name"
+              placeholder="Enter First Name*"
               onChange={handleChange}
               className="bg-white/5 rounded-md p-2 w-full"
               required
             />
             <input
               name="lastName"
-              placeholder="Enter Last Name"
+              placeholder="Enter Last Name*"
               onChange={handleChange}
               className="bg-white/5 rounded-md p-2 w-full"
               required
             />
             <input
               name="email"
-              placeholder="Work email address"
+              placeholder="Work email address*"
               onChange={handleChange}
               className="bg-white/5 rounded-md p-2 w-full"
               required
             />
             <input
               name="phone"
-              placeholder="Enter Phone no."
+              placeholder="Enter Phone no.*"
               value={form.phone}
               onChange={handleChange}
               maxLength={13}
@@ -150,7 +150,7 @@ const ProductGuide = () => {
             />
             <input
               name="pincode"
-              placeholder="Enter Pincode"
+              placeholder="Enter Postcode"
               onChange={handleChange}
               className="bg-white/5 rounded-md p-2 w-full"
               required

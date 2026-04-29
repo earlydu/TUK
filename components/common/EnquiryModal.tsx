@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,20 @@ import {
   validateRequired,
 } from "@/src/lib/validation";
 
-export default function EnquiryModal() {
-  const isCompanyMandatory = true; 
+type EnquiryModalProps = {
+  products?: string[];
+  buttonLabel?: string;
+  dialogTitle?: string;
+  buttonClassName?: string;
+};
+
+export default function EnquiryModal({
+  products = [],
+  buttonLabel = "Enquiries",
+  dialogTitle = "Enquiries",
+  buttonClassName = "rounded-full cursor-pointer bg-[#0300A7] hover:bg-[#1E3A8A] text-xs px-6 h-8",
+}: EnquiryModalProps) {
+  const isCompanyMandatory = true;
 
   // Robot checkbox ke liye state
   const [isRobotChecked, setIsRobotChecked] = useState(false);
@@ -28,12 +40,21 @@ export default function EnquiryModal() {
     company: "",
     email: "",
     phone: "",
-    product: "",
+    product: products.length ? products.join(", ") : "",
     spend: "",
     message: "",
   });
 
-  const handleChange = (e: any) => {
+  useEffect(() => {
+    if (products.length && !form.product) {
+      setForm((prev) => ({ ...prev, product: products.join(", ") }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [products]);
+
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
 
     if (name === "phone") {
@@ -94,7 +115,7 @@ export default function EnquiryModal() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, wishlistProducts: products }),
       });
 
       const data = await res.json();
@@ -108,7 +129,7 @@ export default function EnquiryModal() {
           company: "",
           email: "",
           phone: "",
-          product: "",
+          product: products.length ? products.join(", ") : "",
           spend: "",
           message: "",
         });
@@ -124,14 +145,13 @@ export default function EnquiryModal() {
   return (
     <Dialog>
       <DialogTrigger>
-        <Button className="rounded-full cursor-pointer bg-[#0300A7] hover:bg-[#1E3A8A] text-xs px-6 h-8">
-          Enquiries
-        </Button>
+        <Button className={buttonClassName}>{buttonLabel}</Button>
       </DialogTrigger>
 
       <DialogContent className="max-w-md rounded-xl p-6 font-poppins">
-        <DialogTitle className="text-lg font-semibold font-poppins">Enquiries</DialogTitle>
-
+        <DialogTitle className="text-lg font-semibold font-poppins">
+          {dialogTitle}
+        </DialogTitle>
         <div className="space-y-4 mt-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -173,7 +193,7 @@ export default function EnquiryModal() {
                 value={form.phone}
                 onChange={handleChange}
                 placeholder="Enter Phone no."
-                maxLength={10}
+                maxLength={13}
                 inputMode="numeric"
               />
             </div>
@@ -183,15 +203,30 @@ export default function EnquiryModal() {
             name="product"
             value={form.product}
             onChange={handleChange}
-            placeholder="Product of Interest"
+            placeholder={
+              products.length
+                ? "Wishlist products auto-populated"
+                : "Product of Interest"
+            }
           />
 
-          <Input
+          {products.length > 0 ? (
+            <div className="border rounded-md p-3 bg-gray-50 text-sm text-gray-700">
+              <p className="font-medium mb-2">Wishlist Products:</p>
+              <ul className="list-decimal list-inside space-y-1">
+                {products.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {/* <Input
             name="spend"
             value={form.spend}
             onChange={handleChange}
             placeholder="Typical Annual Spend on TUK"
-          />
+          /> */}
 
           <Textarea
             name="message"
@@ -200,17 +235,16 @@ export default function EnquiryModal() {
             placeholder="Other Comments / Info"
           />
 
-
           <div className="border rounded-md p-3 flex items-center gap-2 text-sm bg-gray-50/50">
-            <input 
-              type="checkbox" 
+            <input
+              type="checkbox"
               id="robot-check"
               className="w-4 h-4 cursor-pointer"
               checked={isRobotChecked}
               onChange={(e) => setIsRobotChecked(e.target.checked)}
             />
             <label htmlFor="robot-check" className="cursor-pointer select-none">
-              I'm not a robot*
+              I&apos;m not a robot*
             </label>
           </div>
 

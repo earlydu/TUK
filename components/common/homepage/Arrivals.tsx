@@ -82,8 +82,8 @@ const Arrivals = () => {
           <div className="text-center">
             <h2 className="text-2xl xl:text-3xl font-bold">New Arrivals</h2>
           </div>
-          <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8">
+            {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
                 className="bg-gray-100 rounded-xl h-80 animate-pulse"
@@ -104,8 +104,8 @@ const Arrivals = () => {
           <h2 className="text-2xl xl:text-3xl font-bold">New Arrivals</h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8 items-stretch">
-          {products.slice(0, 3).map((item: any) => (
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8 items-stretch">
+          {products.slice(0, 4).map((item: any) => (
             <Link key={item.id} href={`/product/${item.slug}`}>
               <div className="bg-background border rounded-xl overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col">
                 <div className="relative w-full h-56">
@@ -125,11 +125,11 @@ const Arrivals = () => {
                 <div className="p-6 space-y-4 flex flex-col flex-grow">
                   <h3 className="text-lg font-semibold">{item.name}</h3>
 
-                  <p className="text-gray-500 text-sm line-clamp-3">
+                  {/* <p className="text-gray-500 text-sm line-clamp-3">
                     {item.description ||
                       item.shortDescription ||
                       "No description"}
-                  </p>
+                  </p> */}
 
                   <p className="text-black text-sm font-semibold">
                     ProductCode:&nbsp;
@@ -138,7 +138,7 @@ const Arrivals = () => {
                     </span>
                   </p>
 
-                  <div className="flex items-center justify-between pt-2 mt-auto">
+                  <div className="flex items-center justify-between  mt-auto">
                     <span className="flex items-center gap-1 text-[#0300A7] font-semibold text-sm">
                       View Specs
                       <IconArrowUpRight size={16} />

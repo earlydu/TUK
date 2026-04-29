@@ -14,11 +14,8 @@ const Counter = () => {
     { number: "1984", label: "Founded in London", prefix: "", suffix: "" },
     { number: "9001", label: "Quality Certified", prefix: "ISO ", suffix: "" },
     { number: "10", label: "Countries Served", prefix: "", suffix: "+" },
-    { number: "20000", label: "Trade Clients", prefix: "", suffix: "+" },
+    { number: "2000", label: "Trade Clients", prefix: "", suffix: "+" },
   ]);
-
-  const [counts, setCounts] = useState<number[]>([]);
-  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     fetch("/api/pages/home")
@@ -26,34 +23,10 @@ const Counter = () => {
       .then((data) => {
         if (data.stats) {
           setStats(data.stats);
-          setCounts(data.stats.map(() => 0));
         }
       })
-      .catch(console.error)
-      .finally(() => setLoaded(true));
+      .catch(console.error);
   }, []);
-
-  useEffect(() => {
-    if (!loaded || stats.length === 0) return;
-    setCounts(stats.map(() => 0));
-
-    const intervals = stats.map((item, index) => {
-      const target = parseInt(item.number, 10) || 0;
-      const increment = Math.ceil(target / 100);
-
-      return setInterval(() => {
-        setCounts((prev) => {
-          const newCounts = [...prev];
-          if (newCounts[index] < target) {
-            newCounts[index] = Math.min(newCounts[index] + increment, target);
-          }
-          return newCounts;
-        });
-      }, 20);
-    });
-
-    return () => intervals.forEach(clearInterval);
-  }, [loaded, stats]);
 
   return (
     <section className="w-full bg-[#1E3A8A] text-white">
@@ -66,7 +39,7 @@ const Counter = () => {
             >
               <h3 className="text-xl xl:text-2xl font-barlow font-bold text-[#FB923C]">
                 {item.prefix}
-                {counts[index] ?? parseInt(item.number, 10)}
+                {item.number}
                 {item.suffix}
               </h3>
               <p className="text-xs font-inter xl:text-sm text-gray-200">

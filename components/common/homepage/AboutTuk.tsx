@@ -24,8 +24,7 @@ const AboutTuk = () => {
       "19 inch related metalwork",
       "OEM production of related products",
     ],
-    description:
-      "TUK supplies manufacturers, wholesalers and distributors but does not cater for retailers or the public.",
+    description: "TUK supplies manufacturers, wholesalers and distributors.",
     badges: [
       "ISO 9001 Certified",
       "B2B Trade Only",
@@ -46,15 +45,23 @@ const AboutTuk = () => {
   return (
     <section className="w-full bg-white font-poppins">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 xl:px-8 py-8">
+        <div className="flex py-2 justify-center items-center gap-3">
+          <div className="h-px w-12 bg-[#FB923C]"></div>
+          <p className="text-[#FB923C] uppercase tracking-wider text-sm font-semibold">
+            {about.sectionLabel}
+          </p>
+          <div className="h-px w-12 bg-[#FB923C]"></div>
+        </div>
         <div className="grid xl:grid-cols-2 gap-10 items-center">
           {/* LEFT CONTENT */}
           <div className="space-y-6">
-            <div className="flex items-center gap-3">
+            {/* <div className="flex  items-center gap-3">
               <div className="h-px w-12 bg-[#FB923C]"></div>
               <p className="text-[#FB923C] uppercase tracking-wider text-sm">
                 {about.sectionLabel}
               </p>
-            </div>
+              <div className="h-px w-12 bg-[#FB923C]"></div>
+            </div> */}
 
             <h2 className="text-[#0300A7] font-extrabold text-2xl xl:text-3xl">
               {about.heading}

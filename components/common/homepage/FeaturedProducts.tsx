@@ -76,8 +76,8 @@ const FeaturedProducts = () => {
         </div>
 
         {/* Grid */}
-        <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-8">
-          {products.slice(0, 3).map((item: any) => (
+        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8">
+          {products.slice(0, 4).map((item: any) => (
             <Link href={`/product/${item.slug}`} key={item.id}>
               {/* Card */}
               <div className="border rounded-xl overflow-hidden hover:shadow-lg transition h-full flex flex-col">

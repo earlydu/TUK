@@ -176,7 +176,7 @@ export default function ProductDetailsTabs({
 
       {/* Technical Specification */}
 
-      <div className="flex flex-col gap-4 font-inter">
+      {/* <div className="flex flex-col gap-4 font-inter">
         <h3 className="font-semibold text-lg">Technical Specification</h3>
 
         <div className="border rounded-xl overflow-hidden bg-white">
@@ -193,7 +193,7 @@ export default function ProductDetailsTabs({
           ):<></>
         }
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

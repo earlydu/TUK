@@ -4,6 +4,12 @@ export async function POST(req: Request) {
   try {
     const data = await req.json();
 
+    const wishlistSection = Array.isArray(data.wishlistProducts) && data.wishlistProducts.length
+      ? `\nWishlist Products:\n${data.wishlistProducts
+          .map((item: string, index: number) => `${index + 1}. ${item}`)
+          .join("\n")}`
+      : "";
+
     const message = `
 New Enquiry:
 
@@ -15,7 +21,7 @@ Product: ${data.product}
 Spend: ${data.spend}
 
 Message:
-${data.message}
+${data.message}${wishlistSection}
     `;
 
     await sendEmail(
