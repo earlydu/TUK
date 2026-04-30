@@ -60,7 +60,7 @@ const ProductGuide = () => {
     }
 
     if (!validatePhone(form.phone)) {
-      toast.error("Invalid phone number (Enter valid 10 digit number)");
+      toast.error("Invalid phone number");
       return;
     }
 

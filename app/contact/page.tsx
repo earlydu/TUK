@@ -108,7 +108,7 @@ const Page = () => {
     }
 
     if (!validatePhone(form.phone)) {
-      toast.error("Enter valid 10 digit phone number");
+      toast.error("Enter a valid phone number");
       return;
     }
 

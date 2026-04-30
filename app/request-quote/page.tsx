@@ -77,10 +77,10 @@ export default function Page() {
       return;
     }
 
-    // 3. Phone Validation (10 digits) with relevant message
-    const phoneRegex = /^\d{13}$/;
+    // 3. Phone Validation: allow phone numbers with any digit length
+    const phoneRegex = /^\d+$/;
     if (!phoneRegex.test(form.phone.replace(/\s/g, ""))) {
-      toast.error("Please enter a valid  phone number");
+      toast.error("Please enter a valid phone number");
       return;
     }
 

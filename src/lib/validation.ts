@@ -6,8 +6,7 @@ export const validateEmail = (email: string) => {
 };
 
 export const validatePhone = (phone: string) => {
-  // Indian mobile: 10 digits, starts with 6-9
-  const regex = /^[6-9]\d{9}$/;
+  const regex = /^\d+$/;
   return regex.test(phone);
 };
 

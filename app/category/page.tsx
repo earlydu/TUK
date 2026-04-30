@@ -31,13 +31,13 @@ export default function Page() {
       {/* BREADCRUMB */}
       <div className="w-full bg-gray-100 border-b font-poppins">
         <div
-          className="w-full h-60 text-center flex flex-col items-center justify-center gap-3 text-white"
+          className="w-full h-72 text-center flex flex-col items-center justify-center gap-3 text-white"
           style={{
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
           <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
-            Categories
+            Products
           </h1>
           <p className="mt-4 text-sm md:text-base text-white/80 max-w-2xl mx-auto font-poppins">
             Explore our wide range of categories and Products
