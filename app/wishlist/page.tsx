@@ -39,14 +39,18 @@ const Page = () => {
     <>
       <Header />
       <div
-        className="h-60 w-full   text-white flex flex-col items-center justify-center gap-4 px-4
-          text-center"
+        className="h-72 w-full   text-white flex flex-col items-center justify-center font-poppins px-4
+          text-center "
         style={{
           background: "linear-gradient(to right, #141D3D, #364FA3)",
         }}
       >
-        <h1 className="text-4xl font-semibold">My Wishlist</h1>
-        <p className="text-xl">Manage your favorite products</p>
+        <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
+          My Wishlist
+        </h1>
+        <p className="mt-4 text-sm md:text-base text-white/80 max-w-2xl mx-auto font-poppins">
+          Manage your favorite products
+        </p>
       </div>
 
       <section className="w-full bg-gray-100 py-12 font-poppins">

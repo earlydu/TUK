@@ -171,16 +171,16 @@ const Page = () => {
       <section className="w-full bg-gray-100 font-poppins">
         {/* HEADER */}
         <div
-          className="w-full text-white py-16"
+          className="w-full h-72 text-white items-center py-16"
           style={{
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
           <div className="max-w-7xl mx-auto px-6 text-center space-y-4">
-            <h1 className="text-3xl font-bold">
+            <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
               {pageData?.hero.title ?? "Contact Us"}
             </h1>
-            <p className="text-sm font-light opacity-90">
+            <p className="mt-4 text-sm md:text-base text-white/80 max-w-2xl mx-auto font-poppins">
               {pageData?.hero.subtitle ??
                 "Get in touch with our expert team for voice and data cabling solutions, technical support, or bespoke requirements."}
             </p>

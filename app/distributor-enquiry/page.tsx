@@ -156,15 +156,11 @@ const Page = () => {
             <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-400 rounded-full blur-3xl"></div>
           </div>
           <div className="max-w-7xl mx-auto px-6 text-center space-y-6 relative z-10">
-            <div className="inline-block">
-              <span className="text-sm font-semibold text-blue-200 bg-blue-900/40 px-4 py-2 rounded-full backdrop-blur">
-                ✨ Partnership Opportunities
-              </span>
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+            <div className="inline-block"></div>
+            <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
               Become a Distributor
             </h1>
-            <p className="text-base md:text-lg font-light opacity-90 max-w-2xl mx-auto">
+            <p className="mt-4 text-sm md:text-base text-white/80 max-w-2xl mx-auto font-poppins">
               Join our network and grow your business with premium voice and
               data cabling solutions. Our expert team is here to support your
               success.

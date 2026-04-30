@@ -36,8 +36,10 @@ export default function Page() {
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
-          <h1 className="text-4xl font-semibold">Categories</h1>
-          <p className="text-xl">
+          <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
+            Categories
+          </h1>
+          <p className="mt-4 text-sm md:text-base text-white/80 max-w-2xl mx-auto font-poppins">
             Explore our wide range of categories and Products
           </p>
         </div>
