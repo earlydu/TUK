@@ -59,8 +59,8 @@ const Vision = () => {
             {/* TOP IMAGE */}
             <div className="relative rounded-2xl overflow-hidden shadow-lg w-[75%] sm:w-[70%] xl:w-[72%]">
               <Image
-                src="/image/vision.png"
-                alt="vision image"
+                src="/image/vission.png"
+                alt="vission image"
                 width={600}
                 height={400}
                 className="object-cover w-full h-full"
@@ -68,10 +68,10 @@ const Vision = () => {
             </div>
 
             {/* BOTTOM IMAGE */}
-            <div className="absolute -bottom-12 left-2 rounded-2xl overflow-hidden shadow-lg w-[60%] sm:w-[55%] xl:w-[60%]">
+            <div className="absolute -bottom-20 left-2 rounded-2xl overflow-hidden shadow-lg w-[60%] sm:w-[55%] xl:w-[60%]">
               <Image
-                src="/image/mision.png"
-                alt="vision image"
+                src="/image/mission.png"
+                alt="mission image"
                 width={500}
                 height={320}
                 className="object-cover w-full h-full"

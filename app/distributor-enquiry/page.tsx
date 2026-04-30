@@ -10,6 +10,8 @@ import {
   IconPhoneFilled,
   IconMailFilled,
   IconFileDescriptionFilled,
+  IconArrowRight,
+  IconCheck,
 } from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,7 @@ import {
 
 const Page = () => {
   const [isChecked, setIsChecked] = useState(false);
+  const [focusedField, setFocusedField] = useState("");
 
   const [form, setForm] = useState({
     name: "",
@@ -139,197 +142,334 @@ const Page = () => {
   return (
     <>
       <Header />
-      <section className="w-full bg-gray-100 font-poppins">
-        {/* HEADER */}
+      <section className="w-full font-poppins bg-gradient-to-br from-slate-50 via-white to-slate-50">
+        {/* HERO HEADER */}
         <div
-          className="w-full text-white py-16"
+          className="w-full text-white py-20 md:py-24 relative overflow-hidden"
           style={{
-            background: "linear-gradient(to right, #141D3D, #364FA3)",
+            background:
+              "linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #364FA3 100%)",
           }}
         >
-          <div className="max-w-7xl mx-auto px-6 text-center space-y-4">
-            <h1 className="text-3xl font-bold">Become a Distributor</h1>
-            <p className="text-sm font-light opacity-90">
-              Get in touch with our expert team for voice and data cabling
-              solutions, <br />
-              technical support, or bespoke requirements.
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-400 rounded-full blur-3xl"></div>
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-cyan-400 rounded-full blur-3xl"></div>
+          </div>
+          <div className="max-w-7xl mx-auto px-6 text-center space-y-6 relative z-10">
+            <div className="inline-block">
+              <span className="text-sm font-semibold text-blue-200 bg-blue-900/40 px-4 py-2 rounded-full backdrop-blur">
+                ✨ Partnership Opportunities
+              </span>
+            </div>
+            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
+              Become a Distributor
+            </h1>
+            <p className="text-base md:text-lg font-light opacity-90 max-w-2xl mx-auto">
+              Join our network and grow your business with premium voice and
+              data cabling solutions. Our expert team is here to support your
+              success.
             </p>
           </div>
         </div>
 
-        {/* CONTACT SECTION */}
-        <div className="max-w-5xl mx-auto px-6 py-16 grid xl:grid-cols-12 gap-12">
-          {/* LEFT SIDE */}
-          <div className="space-y-8 xl:col-span-6">
-            <h2 className="text-xl font-semibold">Get In Touch</h2>
-
-            {/* ADDRESS */}
-            <div className="flex gap-4">
-              <div className="p-2 h-10 rounded-md bg-[#2596BE1A]">
-                <IconMapPinFilled className="text-[#2596BE]" />
-              </div>
-              <div className="text-sm text-gray-700">
-                <p className="font-semibold">Our Address</p>
-                <p>
-                  Unit 4, Wimbledon Stadium Business Centre, Riverside Road,
-                  London SW17 0BA
+        {/* MAIN CONTENT */}
+        <div className="max-w-7xl mx-auto px-6 py-16 md:py-20">
+          <div className="grid xl:grid-cols-5 gap-10 md:gap-16">
+            {/* LEFT SIDE - CONTACT INFO & MAP */}
+            <div className="xl:col-span-2 space-y-8">
+              {/* Contact Info Cards */}
+              <div className="space-y-5">
+                <h2 className="text-2xl font-bold text-gray-900">
+                  Get In Touch
+                </h2>
+                <p className="text-gray-600 text-sm">
+                  Reach out to our distribution team to discuss partnership
+                  opportunities.
                 </p>
               </div>
-            </div>
 
-            {/* PHONE */}
-           {/* PHONE */}
-            <a 
-              href="tel:+442089466688" 
-              className="flex gap-4 cursor-pointer group"
-            >
-              <div className="p-2 rounded-md bg-[#2596BE1A]">
-                <IconPhoneFilled className="text-[#2596BE]" />
+              {/* ADDRESS CARD */}
+              <div className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 p-3 h-fit rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50 group-hover:from-blue-100 group-hover:to-cyan-100 transition-colors">
+                    <IconMapPinFilled className="text-blue-600 w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-semibold text-gray-900 text-sm">
+                      Our Address
+                    </p>
+                    <p className="text-gray-600 text-sm leading-relaxed">
+                      Unit 4, Wimbledon Stadium <br />
+                      Business Centre, Riverside Road,
+                      <br />
+                      London SW17 0BA
+                    </p>
+                  </div>
+                </div>
               </div>
-              <div className="text-sm text-gray-700">
-                <p className="font-semibold">Phone</p>
-                <p className="group-hover:underline">+44 (0) 20 8946 6688</p>
+
+              {/* PHONE CARD */}
+              <a
+                href="tel:+442089466688"
+                className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 block"
+              >
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 p-3 h-fit rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50 group-hover:from-blue-100 group-hover:to-cyan-100 transition-colors">
+                    <IconPhoneFilled className="text-blue-600 w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-semibold text-gray-900 text-sm">Phone</p>
+                    <p className="text-gray-600 text-sm group-hover:text-blue-600 transition-colors font-medium">
+                      +44 (0) 20 8946 6688
+                    </p>
+                  </div>
+                </div>
+              </a>
+
+              {/* EMAIL CARD */}
+              <a
+                href="mailto:sales@tuk.co.uk"
+                className="group bg-white rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 block"
+              >
+                <div className="flex gap-4">
+                  <div className="flex-shrink-0 p-3 h-fit rounded-lg bg-gradient-to-br from-blue-50 to-cyan-50 group-hover:from-blue-100 group-hover:to-cyan-100 transition-colors">
+                    <IconMailFilled className="text-blue-600 w-5 h-5" />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="font-semibold text-gray-900 text-sm">Email</p>
+                    <p className="text-gray-600 text-sm group-hover:text-blue-600 transition-colors font-medium">
+                      sales@tuk.co.uk
+                    </p>
+                  </div>
+                </div>
+              </a>
+
+              {/* MAP */}
+              <div className="w-full h-72 rounded-2xl overflow-hidden shadow-lg border border-gray-100">
+                <iframe
+                  src="https://www.google.com/maps?q=51.43319,-0.19002&hl=en&z=16&output=embed"
+                  className="w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
               </div>
-            </a>
 
-            {/* EMAIL */}
-            <a 
-              href="mailto:sales@tuk.co.uk" 
-              className="flex gap-4 cursor-pointer group"
-            >
-              <div className="p-2 rounded-md bg-[#2596BE1A]">
-                <IconMailFilled className="text-[#2596BE]" />
-              </div>
-              <div className="text-sm text-gray-700">
-                <p className="font-semibold">Email</p>
-                <p className="group-hover:underline">sales@tuk.co.uk</p>
-              </div>
-            </a>
-            {/* MAP */}
-            <div className="w-full h-64 rounded-xl overflow-hidden shadow">
-              <iframe
-                src="https://www.google.com/maps?q=51.43319,-0.19002&hl=en&z=16&output=embed"
-                className="w-full h-full border-0"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-
-            {/* ✅ UPDATED QUOTE CARD */}
-            <div className="bg-gray-100 rounded-2xl p-6 shadow-sm">
-              <h3 className="font-semibold text-gray-900 mb-2">
-                Need a fast quote?
-              </h3>
-
-              <p className="text-sm text-gray-600 mb-6">
-                Click below to jump to our quick quote request form.
-              </p>
-
+              {/* QUOTE CARD */}
               <Link href="/request-quote">
-                <Button className="bg-[#0300A7] cursor-pointer py-6 rounded-full   hover:bg-blue-900 w-full flex items-center justify-center gap-2">
-                  <IconFileDescriptionFilled size={18} />
-                  REQUEST A QUOTE
-                </Button>
+                <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-8 shadow-lg cursor-pointer hover:shadow-2xl transition-all duration-300 group text-white overflow-hidden relative">
+                  <div className="absolute inset-0 opacity-20">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full blur-2xl"></div>
+                  </div>
+                  <div className="relative z-10">
+                    <div className="flex items-start justify-between mb-3">
+                      <h3 className="font-bold text-lg">Need a Fast Quote?</h3>
+                      <IconArrowRight className="group-hover:translate-x-1 transition-transform" />
+                    </div>
+                    <p className="text-blue-100 text-sm mb-5">
+                      Get an instant quote for your bulk orders or custom
+                      requirements.
+                    </p>
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                      <span>REQUEST A QUOTE</span>
+                      <IconFileDescriptionFilled size={16} />
+                    </div>
+                  </div>
+                </div>
               </Link>
             </div>
-          </div>
 
-          {/* RIGHT SIDE FORM */}
-          <div className="bg-white p-8 rounded-xl shadow space-y-6 xl:col-span-6 h-fit">
-            <h2 className="text-xl font-semibold">Send us a message</h2>
+            {/* RIGHT SIDE FORM */}
+            <div className="xl:col-span-3">
+              <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 md:p-10">
+                <div className="mb-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                    Send us a Message
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    Fill out the form below and our team will get back to you
+                    within 24 hours.
+                  </p>
+                </div>
 
-            {/* Name + Company */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <input
-                name="name"
-                value={form.name}
-                onChange={handleChange}
-                placeholder="Full Name*"
-                className="border rounded-lg px-4 py-3 text-sm w-full"
-              />
+                <div className="space-y-6">
+                  {/* Name + Company */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Full Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        name="name"
+                        value={form.name}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField("name")}
+                        onBlur={() => setFocusedField("")}
+                        placeholder="John Doe"
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all text-sm focus:outline-none ${
+                          focusedField === "name"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Company <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        name="company"
+                        value={form.company}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField("company")}
+                        onBlur={() => setFocusedField("")}
+                        placeholder="Your Company"
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all text-sm focus:outline-none ${
+                          focusedField === "company"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                        }`}
+                      />
+                    </div>
+                  </div>
 
-              <input
-                name="company"
-                value={form.company}
-                onChange={handleChange}
-                placeholder="Company*"
-                className="border rounded-lg px-4 py-3 text-sm w-full"
-              />
+                  {/* Email + Phone */}
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Email Address <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        name="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField("email")}
+                        onBlur={() => setFocusedField("")}
+                        placeholder="john@company.com"
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all text-sm focus:outline-none ${
+                          focusedField === "email"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                        }`}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        name="phone"
+                        value={form.phone}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField("phone")}
+                        onBlur={() => setFocusedField("")}
+                        placeholder="1234567890"
+                        maxLength={10}
+                        inputMode="numeric"
+                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all text-sm focus:outline-none ${
+                          focusedField === "phone"
+                            ? "border-blue-500 bg-blue-50"
+                            : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                        }`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Inquiry */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Inquiry Type <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="inquiry"
+                      value={form.inquiry}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField("inquiry")}
+                      onBlur={() => setFocusedField("")}
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all text-sm focus:outline-none appearance-none bg-no-repeat ${
+                        focusedField === "inquiry"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                      }`}
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 9L1 4h10z'/%3E%3C/svg%3E")`,
+                        backgroundPosition: "right 1rem center",
+                        backgroundSize: "1.5em 1.5em",
+                        paddingRight: "2.5rem",
+                      }}
+                    >
+                      <option value="">Select Inquiry Type</option>
+                      <option value="product">Product Inquiry</option>
+                      <option value="service">Service Support</option>
+                      <option value="general">General Question</option>
+                    </select>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Message <span className="text-red-500">*</span>
+                    </label>
+                    <textarea
+                      name="message"
+                      value={form.message}
+                      onChange={handleChange}
+                      onFocus={() => setFocusedField("message")}
+                      onBlur={() => setFocusedField("")}
+                      placeholder="Tell us more about your interest..."
+                      className={`w-full px-4 py-3 rounded-xl border-2 transition-all text-sm focus:outline-none resize-none h-32 ${
+                        focusedField === "message"
+                          ? "border-blue-500 bg-blue-50"
+                          : "border-gray-200 bg-gray-50 hover:border-gray-300"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Checkbox */}
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <div className="flex-shrink-0 mt-1">
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={(e) => setIsChecked(e.target.checked)}
+                        className="w-5 h-5 rounded-lg border-2 border-gray-300 cursor-pointer accent-blue-600"
+                      />
+                    </div>
+                    <span className="text-sm text-gray-700">
+                      I agree to the{" "}
+                      <Link
+                        href="/terms-conditions"
+                        className="text-blue-600 font-semibold hover:underline"
+                      >
+                        Terms & Conditions
+                      </Link>{" "}
+                      and{" "}
+                      <Link
+                        href="/privacy-policy"
+                        className="text-blue-600 font-semibold hover:underline"
+                      >
+                        Privacy Policy
+                      </Link>
+                    </span>
+                  </label>
+
+                  {/* Submit Button */}
+                  <button
+                    onClick={handleSubmit}
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold py-4 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl mt-8 group"
+                  >
+                    <IconSend
+                      size={18}
+                      className="group-hover:translate-x-1 transition-transform"
+                    />
+                    SEND MESSAGE
+                  </button>
+
+                  <p className="text-xs text-gray-500 text-center mt-4">
+                    We'll respond within 24 business hours
+                  </p>
+                </div>
+              </div>
             </div>
-
-            {/* Email + Phone */}
-            <div className="grid md:grid-cols-2 gap-6">
-              <input
-                name="email"
-                value={form.email}
-                onChange={handleChange}
-                placeholder="Email Address*"
-                className="border rounded-lg px-4 py-3 text-sm w-full"
-              />
-
-              <input
-                name="phone"
-                value={form.phone}
-                onChange={handleChange}
-                placeholder="Phone Number*"
-                maxLength={10}
-                inputMode="numeric"
-                className="border rounded-lg px-4 py-3 text-sm w-full"
-              />
-            </div>
-
-            {/* Inquiry */}
-            <select
-              name="inquiry"
-              value={form.inquiry}
-              onChange={handleChange}
-              className="border rounded-lg px-4 py-3 text-sm w-full"
-            >
-              <option value="">Select Enquiry</option>
-              <option value="product">Product </option>
-              <option value="service">Service </option>
-              <option value="general">General </option>
-            </select>
-
-            {/* Message */}
-            <textarea
-              name="message"
-              value={form.message}
-              onChange={handleChange}
-              placeholder="Message*"
-              className="border rounded-lg px-4 py-3 text-sm w-full h-32"
-            />
-
-            {/* Checkbox */}
-            <label className="flex items-start gap-2 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={isChecked}
-                onChange={(e) => setIsChecked(e.target.checked)}
-                className="mt-1"
-              />
-
-              <span className="text-sm">
-                I agree to the{" "}
-                <span className="text-blue-600 underline">
-                  <Link href="/terms-conditions">Terms & Conditions</Link>
-                </span>{" "}
-                and{" "}
-                <span className="text-blue-600 underline">
-                  <Link href="/privacy-policy">Privacy Policy</Link>
-                </span>
-                .
-              </span>
-            </label>
-
-            {/* Submit */}
-            <Button
-              onClick={handleSubmit}
-              className="bg-[#0300A7] cursor-pointer py-6 rounded-full hover:bg-blue-900 w-full flex items-center justify-center gap-2"
-            >
-              <IconSend size={18} />
-              SEND MESSAGE
-            </Button>
           </div>
         </div>
       </section>
