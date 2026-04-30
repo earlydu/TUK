@@ -6,9 +6,9 @@ let aboutPageData = {
   title: 'About Page',
   slug: 'about',
   hero: {
-    title: 'Cabling Solutions for a Connected World',
+    title: 'High-Performance Cabling Built to Last',
     subtitle:
-      'A legacy of British manufacturing excellence in voice and data infrastructure since 1984.',
+      ' manufacturing excellence in voice and data infrastructure since 1984.',
     badges: [
       { icon: 'IconShieldCheck', text: 'ISO 9001:2015 Certified' },
       { icon: 'IconMapPin', text: 'Based in London, UK' },
@@ -43,7 +43,7 @@ let aboutPageData = {
     {
       icon: 'IconShieldCheck',
       title: 'Quality First',
-      description: 'Rigorous two-stage QA testing for every product we manufacture.',
+      description: 'Exceptional build integrity defines every product we produce.',
     },
     {
       icon: 'IconBulb',
