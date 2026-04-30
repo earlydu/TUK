@@ -125,14 +125,16 @@ export default function Page() {
 
       <section className="w-full font-poppins bg-muted/40">
         <div
-          className="w-full h-60  text-white flex flex-col items-center justify-center gap-4 px-4
+          className="w-full h-72  text-white flex flex-col items-center justify-center gap-4 px-4
           text-center"
           style={{
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
-          <h1 className="text-4xl font-semibold">Request a Wholesale Quote</h1>
-          <p className="max-w-4xl">
+          <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
+            Request a Quote
+          </h1>
+          <p className="mt-4 text-sm md:text-base text-white/80 max-w-2xl mx-auto font-poppins">
             TUK ltd provides high-quality, professional-grade cabling solutions
             for global trade buyers and distributors. Fill our the form below to
             recieve a custom quotation tailored to your business requirements.
