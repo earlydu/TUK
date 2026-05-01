@@ -2,8 +2,11 @@ import { db } from "@/src/db";
 import { products, categories } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET() {
-  const data = await db
+export async function GET(req: Request) {
+  const url = new URL(req.url);
+  const includeInactive = url.searchParams.get("includeInactive") === "true";
+
+  const query = db
     .select({
       id: products.id,
       name: products.name,
@@ -23,6 +26,10 @@ export async function GET() {
     })
     .from(products)
     .leftJoin(categories, eq(products.categoryId, categories.id));
+
+  const data = includeInactive
+    ? await query
+    : await query.where(eq(products.isActive, true));
 
   return Response.json(data);
 }

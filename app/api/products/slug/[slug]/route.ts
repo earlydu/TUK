@@ -7,7 +7,7 @@ import {
   productDiTerms,
   relatedProducts as relatedProductsTable,
 } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { distributors, productDistributor } from "@/src/db/schema";
 
 export async function GET(
@@ -21,7 +21,10 @@ export async function GET(
       return Response.json({ error: "Slug is required" }, { status: 400 });
     }
 
-    const product = await db.select().from(products).where(eq(products.slug, slug));
+    const product = await db
+      .select()
+      .from(products)
+      .where(and(eq(products.slug, slug), eq(products.isActive, true)));
 
     if (!product.length) {
       return Response.json({ error: "Product not found" }, { status: 404 });

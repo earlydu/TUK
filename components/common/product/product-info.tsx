@@ -31,6 +31,7 @@ interface ProductInfoProps {
     description?: string;
     shortDescription?: string;
     id?: string;
+    slug?: string;
     productCode?: string;
     sku?: string;
     brand?: string;
@@ -80,6 +81,7 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     } else {
       wishlist.push({
         id: product.id,
+        slug: product.slug,
         name: product.name,
         bannerImageUrl: product.bannerImageUrl,
         sku: product.sku,

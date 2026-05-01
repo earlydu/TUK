@@ -105,109 +105,102 @@ export async function PUT(
 
     const body = await req.json();
 
-    // 🔥 REMOVE UNDEFINED VALUES
-    const updateData: any = {
-      name: body.name ?? null,
-      slug: body.slug ?? null,
-      description: body.description ?? null,
-      shortDescription: body.shortDescription ?? null,
-      brand: body.brand ?? null,
-      sku: body.sku ?? null,
-      productCode: body.productCode ?? null,
-      categoryId: body.categoryId ?? null,
-      bannerImageUrl: body.bannerImageUrl ?? null,
-      pdfUrl: body.pdfUrl ?? null,
-      content: body.content ?? null,
-    };
+    const updateData: any = {};
+    if (body.name !== undefined) updateData.name = body.name;
+    if (body.slug !== undefined) updateData.slug = body.slug;
+    if (body.description !== undefined) updateData.description = body.description;
+    if (body.shortDescription !== undefined)
+      updateData.shortDescription = body.shortDescription;
+    if (body.brand !== undefined) updateData.brand = body.brand;
+    if (body.sku !== undefined) updateData.sku = body.sku;
+    if (body.productCode !== undefined)
+      updateData.productCode = body.productCode;
+    if (body.categoryId !== undefined)
+      updateData.categoryId = body.categoryId;
+    if (body.bannerImageUrl !== undefined)
+      updateData.bannerImageUrl = body.bannerImageUrl;
+    if (body.pdfUrl !== undefined) updateData.pdfUrl = body.pdfUrl;
+    if (body.content !== undefined) updateData.content = body.content;
+    if (body.isActive !== undefined) updateData.isActive = body.isActive;
 
-    await db
-      .update(products)
-      .set(updateData)
-      .where(eq(products.id, id));
-
-    // 🔥 DELETE & UPDATE FEATURES
-    await db
-      .delete(productFeatures)
-      .where(eq(productFeatures.productId, id));
-
-    if (body.features?.length > 0) {
-      await db.insert(productFeatures).values(
-        body.features.map((feature: string) => ({
-          productId: id,
-          feature,
-        }))
-      );
+    if (Object.keys(updateData).length > 0) {
+      await db.update(products).set(updateData).where(eq(products.id, id));
     }
 
-    // 🔥 DELETE & UPDATE SPECIFICATIONS
-    await db
-      .delete(productSpecifications)
-      .where(eq(productSpecifications.productId, id));
-
-    // Combine specs and techspecs into one array to avoid duplication
-    const allSpecs = [
-      ...(body.specs?.filter((s: any) => s?.key && s?.value) || []),
-      ...(body.techspecs?.filter((s: any) => s?.key && s?.value) || []),
-    ];
-
-    if (allSpecs.length > 0) {
-      // Remove duplicates based on key-value combination
-      const uniqueSpecs = Array.from(
-        new Map(
-          allSpecs.map((spec: any) => [`${spec.key}-${spec.value}`, spec])
-        ).values()
-      );
-
-      await db.insert(productSpecifications).values(
-        uniqueSpecs.map((spec: any) => ({
-          productId: id,
-          key: spec.key,
-          value: spec.value,
-        }))
-      );
+    if (body.features !== undefined) {
+      await db.delete(productFeatures).where(eq(productFeatures.productId, id));
+      if (body.features?.length > 0) {
+        await db.insert(productFeatures).values(
+          body.features.map((feature: string) => ({
+            productId: id,
+            feature,
+          }))
+        );
+      }
     }
 
-    // 🔥 DELETE & UPDATE GALLERY IMAGES
-    await db
-      .delete(productImages)
-      .where(eq(productImages.productId, id));
-
-    if (body.images?.length > 0) {
-      await db.insert(productImages).values(
-        body.images.map((imageUrl: string) => ({
-          productId: id,
-          imageUrl,
-        }))
-      );
-    }
-
-    // 🔥 DELETE & UPDATE DI TERMS
-    await db
-      .delete(productDiTerms)
-      .where(eq(productDiTerms.productId, id));
-
-    if (body.diTerms?.length > 0) {
-      await db.insert(productDiTerms).values(
-        body.diTerms.map((term: string) => ({
-          productId: id,
-          value: term,
-        }))
-      );
-    }
-
+    if (body.specs !== undefined || body.techspecs !== undefined) {
       await db
-  .delete(productDistributor)
-  .where(eq(productDistributor.productId, id));
+        .delete(productSpecifications)
+        .where(eq(productSpecifications.productId, id));
 
-// 🔥 INSERT NEW DISTRIBUTORS
-if (body.distributors?.length > 0) {
-  await db.insert(productDistributor).values(
-    body.distributors.map((distId: string) => ({
-      productId: id,
-      distributorsId: distId,
-    }))
-  );
-}
+      const allSpecs = [
+        ...(body.specs?.filter((s: any) => s?.key && s?.value) || []),
+        ...(body.techspecs?.filter((s: any) => s?.key && s?.value) || []),
+      ];
+
+      if (allSpecs.length > 0) {
+        const uniqueSpecs = Array.from(
+          new Map(
+            allSpecs.map((spec: any) => [`${spec.key}-${spec.value}`, spec])
+          ).values()
+        );
+
+        await db.insert(productSpecifications).values(
+          uniqueSpecs.map((spec: any) => ({
+            productId: id,
+            key: spec.key,
+            value: spec.value,
+          }))
+        );
+      }
+    }
+
+    if (body.images !== undefined) {
+      await db.delete(productImages).where(eq(productImages.productId, id));
+      if (body.images?.length > 0) {
+        await db.insert(productImages).values(
+          body.images.map((imageUrl: string) => ({
+            productId: id,
+            imageUrl,
+          }))
+        );
+      }
+    }
+
+    if (body.diTerms !== undefined) {
+      await db.delete(productDiTerms).where(eq(productDiTerms.productId, id));
+      if (body.diTerms?.length > 0) {
+        await db.insert(productDiTerms).values(
+          body.diTerms.map((term: string) => ({
+            productId: id,
+            value: term,
+          }))
+        );
+      }
+    }
+
+    if (body.distributors !== undefined) {
+      await db.delete(productDistributor).where(eq(productDistributor.productId, id));
+      if (body.distributors?.length > 0) {
+        await db.insert(productDistributor).values(
+          body.distributors.map((distId: string) => ({
+            productId: id,
+            distributorsId: distId,
+          }))
+        );
+      }
+    }
 
     return Response.json({ success: true });
   } catch (error) {

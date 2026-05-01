@@ -34,6 +34,7 @@ import Link from "next/link";
 const CategoryDefine = ({ category, sort, setSort }: any) => {
   const [categoryList, setCategoryList] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
+  const [newProductIds, setNewProductIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
 
@@ -94,16 +95,21 @@ const CategoryDefine = ({ category, sort, setSort }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [catRes, prodRes] = await Promise.all([
+        const [catRes, prodRes, newRes] = await Promise.all([
           fetch("/api/category"),
           fetch("/api/products"),
+          fetch("/api/products/new"),
         ]);
 
         const catData = await catRes.json();
         const prodData = await prodRes.json();
+        const newData = await newRes.json();
 
         setCategoryList(catData);
         setProducts(prodData);
+        setNewProductIds(
+          (Array.isArray(newData) ? newData : []).map((p: any) => p.id),
+        );
       } catch (error) {
         console.error(error);
       } finally {
@@ -170,13 +176,11 @@ const CategoryDefine = ({ category, sort, setSort }: any) => {
             className="bg-white border rounded-xl overflow-hidden hover:shadow-lg transition block"
           >
             <div className="relative">
-              {item.createdAt &&
-                new Date(item.createdAt) >
-                  new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && (
-                  <span className="absolute top-3 left-3 bg-[#FB923C] text-white text-xs px-3 py-1 rounded-full">
-                    NEW
-                  </span>
-                )}
+              {newProductIds.includes(item.id) && (
+                <span className="absolute top-3 left-3 bg-[#FB923C] text-white text-xs px-3 py-1 rounded-full">
+                  NEW
+                </span>
+              )}
 
               <Image
                 src={item.bannerImageUrl || "/image/category.png"}

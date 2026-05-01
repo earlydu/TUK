@@ -39,7 +39,7 @@ export default function NewProductsPage() {
   const fetchAllProducts = async () => {
     try {
       setLoading(true);
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products?includeInactive=true");
       const data = await res.json();
       setAllProducts(Array.isArray(data) ? data : []);
     } catch {
@@ -104,14 +104,14 @@ export default function NewProductsPage() {
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const filteredProducts = normalizedQuery
     ? allProducts.filter((p) => {
-      const alreadyNew = newProducts.some((np) => np.id === p.id);
-      if (alreadyNew) return false;
-      const searchable = [p.name, p.slug, p.brand, p.sku, p.productCode]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return searchable.includes(normalizedQuery);
-    })
+        const alreadyNew = newProducts.some((np) => np.id === p.id);
+        if (alreadyNew) return false;
+        const searchable = [p.name, p.slug, p.brand, p.sku, p.productCode]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return searchable.includes(normalizedQuery);
+      })
     : [];
 
   return (
@@ -251,7 +251,6 @@ export default function NewProductsPage() {
                           SKU / Code
                         </th>
 
-
                         <th className="px-6 py-3 text-center text-sm font-semibold text-gray-700">
                           Action
                         </th>
@@ -289,7 +288,6 @@ export default function NewProductsPage() {
                           <td className="px-6 py-4 text-sm text-gray-600">
                             {product.sku || product.productCode || "—"}
                           </td>
-
 
                           <td className="px-6 py-4 text-center">
                             <Button

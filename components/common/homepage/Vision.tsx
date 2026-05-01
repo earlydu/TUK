@@ -14,7 +14,7 @@ const Vision = () => {
   const [vision, setVision] = useState<VisionData>({
     missionTitle: "Our Mission",
     missionText:
-      "Our mission is to deliver reliable passive data and multimedia connectivity systems through a continuously evolving product range. We focus on quality, innovation, and dependable performance while providing high-value solutions and exceptional service that support our customers' communication infrastructure and long-term success.",
+      "Our mission is to deliver reliable passive data and multimedia connectivity systems.",
     coreValuesTitle: "Our Core Values",
     coreValuesText:
       "Our values guide the way we deliver our mission. We are passionate about providing excellent value and service while building long-term partnerships with our customers. We value, respect, and trust one another, take pride in working together as a strong team, and remain committed to completing our work efficiently and to the highest standards.",

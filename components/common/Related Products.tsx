@@ -76,6 +76,7 @@ export default function RelatedProducts({
     } else {
       wishlist.push({
         id: product.id,
+        slug: product.slug,
         name: product.name,
         bannerImageUrl: product.bannerImageUrl,
         sku: product.sku,

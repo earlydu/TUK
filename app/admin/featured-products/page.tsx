@@ -42,7 +42,7 @@ export default function FeaturedProductsPage() {
     const fetchAllProducts = async () => {
       try {
         setLoading(true);
-        const res = await fetch("/api/products");
+        const res = await fetch("/api/products?includeInactive=true");
         const data = await res.json();
         setAllProducts(data || []);
       } catch (error) {
@@ -104,14 +104,14 @@ export default function FeaturedProductsPage() {
   const normalizedQuery = searchQuery.trim().toLowerCase();
   const filteredProducts = normalizedQuery
     ? allProducts.filter((p) => {
-      const isFeatured = featuredProducts.some((fp) => fp.id === p.id);
-      if (isFeatured) return false; // Don't show already featured products
-      const searchable = [p.name, p.slug, p.brand, p.sku]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return searchable.includes(normalizedQuery);
-    })
+        const isFeatured = featuredProducts.some((fp) => fp.id === p.id);
+        if (isFeatured) return false; // Don't show already featured products
+        const searchable = [p.name, p.slug, p.brand, p.sku]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return searchable.includes(normalizedQuery);
+      })
     : [];
 
   return (

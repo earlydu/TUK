@@ -30,6 +30,7 @@ const getWishlist = () => {
 
 const ProductDefine = ({ category, sort, setSort }: any) => {
   const [products, setProducts] = useState<any[]>([]);
+  const [newProductIds, setNewProductIds] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
@@ -39,9 +40,16 @@ const ProductDefine = ({ category, sort, setSort }: any) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
+        const [prodRes, newRes] = await Promise.all([
+          fetch("/api/products"),
+          fetch("/api/products/new"),
+        ]);
+        const data = await prodRes.json();
+        const newData = await newRes.json();
         setProducts(data);
+        setNewProductIds(
+          (Array.isArray(newData) ? newData : []).map((p: any) => p.id),
+        );
       } catch (err) {
         console.error(err);
       } finally {
@@ -69,6 +77,7 @@ const ProductDefine = ({ category, sort, setSort }: any) => {
     } else {
       wishlist.push({
         id: product.id,
+        slug: product.slug,
         name: product.name,
         bannerImageUrl: product.bannerImageUrl,
         sku: product.sku,
@@ -178,13 +187,11 @@ const ProductDefine = ({ category, sort, setSort }: any) => {
             className="bg-white border rounded-xl overflow-hidden hover:shadow-lg transition block"
           >
             <div className="relative">
-              {product.createdAt &&
-                new Date(product.createdAt) >
-                  new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) && (
-                  <span className="absolute top-3 left-3 bg-[#FB923C] text-white text-xs px-3 py-1 rounded-full">
-                    NEW
-                  </span>
-                )}
+              {newProductIds.includes(product.id) && (
+                <span className="absolute top-3 left-3 bg-[#FB923C] text-white text-xs px-3 py-1 rounded-full">
+                  NEW
+                </span>
+              )}
 
               <Image
                 src={product.bannerImageUrl}
@@ -281,7 +288,7 @@ const ProductDefine = ({ category, sort, setSort }: any) => {
                 <PaginationLink
                   isActive={page === item}
                   onClick={() => setPage(item as number)}
-                  className="min-w-[36px] text-center"
+                  className="min-w-9 text-center"
                 >
                   {item}
                 </PaginationLink>

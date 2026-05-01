@@ -1,13 +1,13 @@
 import { db } from "@/src/db";
 import { products } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 export async function GET() {
   try {
     const featuredProducts = await db
       .select()
       .from(products)
-      .where(eq(products.isFeatured, true));
+      .where(and(eq(products.isFeatured, true), eq(products.isActive, true)));
 
     return Response.json(featuredProducts);
   } catch (error) {

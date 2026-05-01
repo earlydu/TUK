@@ -17,17 +17,29 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
+type SortColumn =
+  | "name"
+  | "category"
+  | "productCode"
+  | "createdAt"
+  | "isActive";
+
+type SortDirection = "asc" | "desc";
+
 export function ProductsPageClient() {
   const [products, setProducts] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [duplicatingId, setDuplicatingId] = useState<string | null>(null);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
+  const [sortColumn, setSortColumn] = useState<SortColumn>("createdAt");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const router = useRouter();
   const searchParams = useSearchParams();
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const res = await fetch("/api/products");
+      const res = await fetch("/api/products?includeInactive=true");
       const data = await res.json();
 
       // If returning from an edit, float that product to the top
@@ -89,18 +101,81 @@ export function ProductsPageClient() {
     }
   };
 
-  const filteredProducts = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLowerCase();
-    if (!normalizedQuery) return products;
+  const togglePublishStatus = async (id: string, publish: boolean) => {
+    try {
+      setPublishingId(id);
+      const res = await fetch(`/api/products/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ isActive: publish }),
+      });
+      const data = await res.json();
 
-    return products.filter((p) => {
-      const searchable = [p.name, p.slug, p.brand, p.sku, p.productCode]
-        .filter(Boolean)
-        .join(" ")
-        .toLowerCase();
-      return searchable.includes(normalizedQuery);
+      if (data.success) {
+        toast.success(`Product ${publish ? "published" : "unpublished"}`);
+        setProducts((prev) =>
+          prev.map((product) =>
+            product.id === id ? { ...product, isActive: publish } : product,
+          ),
+        );
+      } else {
+        toast.error(data.error || "Failed to update status");
+      }
+    } catch {
+      toast.error("Failed to update status");
+    } finally {
+      setPublishingId(null);
+    }
+  };
+
+  const toggleSort = (column: SortColumn) => {
+    if (sortColumn === column) {
+      setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
+      return;
+    }
+
+    setSortColumn(column);
+    setSortDirection(column === "createdAt" ? "desc" : "asc");
+  };
+
+  const sortedProducts = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
+    const filtered = !normalizedQuery
+      ? products
+      : products.filter((p) => {
+          const searchable = [p.name, p.slug, p.brand, p.sku, p.productCode]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+          return searchable.includes(normalizedQuery);
+        });
+
+    return [...filtered].sort((a, b) => {
+      const compareText = (left: any, right: any) =>
+        String(left || "").localeCompare(String(right || ""), undefined, {
+          sensitivity: "base",
+        });
+
+      let result = 0;
+
+      if (sortColumn === "name") {
+        result = compareText(a.name, b.name);
+      } else if (sortColumn === "category") {
+        result = compareText(a.category, b.category);
+      } else if (sortColumn === "productCode") {
+        result = compareText(a.productCode, b.productCode);
+      } else if (sortColumn === "createdAt") {
+        result =
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      } else if (sortColumn === "isActive") {
+        result = Number(a.isActive) - Number(b.isActive);
+      }
+
+      return sortDirection === "asc" ? result : -result;
     });
-  }, [products, searchQuery]);
+  }, [products, searchQuery, sortColumn, sortDirection]);
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen font-barlow">
@@ -117,7 +192,9 @@ export function ProductsPageClient() {
             />
           </div>
           <Button
-            onClick={() => (window.location.href = "/admin/Product/add-product")}
+            onClick={() =>
+              (window.location.href = "/admin/Product/add-product")
+            }
             className="bg-black cursor-pointer text-white px-4 py-2 rounded-lg "
           >
             Add Product
@@ -137,15 +214,92 @@ export function ProductsPageClient() {
             <thead className="bg-gray-100 text-left">
               <tr>
                 <th className="p-3">Image</th>
-                <th className="p-3">Name</th>
-                <th className="p-3">Category</th>
-                <th className="p-3">Product Code</th>
+                <th className="p-3">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("name")}
+                    className="inline-flex items-center gap-1 font-semibold text-left"
+                  >
+                    Name
+                    <span className="text-xs text-gray-500">
+                      {sortColumn === "name"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "↕"}
+                    </span>
+                  </button>
+                </th>
+                <th className="p-3">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("category")}
+                    className="inline-flex items-center gap-1 font-semibold text-left"
+                  >
+                    Category
+                    <span className="text-xs text-gray-500">
+                      {sortColumn === "category"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "↕"}
+                    </span>
+                  </button>
+                </th>
+                <th className="p-3">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("productCode")}
+                    className="inline-flex items-center gap-1 font-semibold text-left"
+                  >
+                    Product Code
+                    <span className="text-xs text-gray-500">
+                      {sortColumn === "productCode"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "↕"}
+                    </span>
+                  </button>
+                </th>
+                <th className="p-3">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("createdAt")}
+                    className="inline-flex items-center gap-1 font-semibold text-left"
+                  >
+                    Date Added
+                    <span className="text-xs text-gray-500">
+                      {sortColumn === "createdAt"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "↕"}
+                    </span>
+                  </button>
+                </th>
+                <th className="p-3">
+                  <button
+                    type="button"
+                    onClick={() => toggleSort("isActive")}
+                    className="inline-flex items-center gap-1 font-semibold text-left"
+                  >
+                    Status
+                    <span className="text-xs text-gray-500">
+                      {sortColumn === "isActive"
+                        ? sortDirection === "asc"
+                          ? "▲"
+                          : "▼"
+                        : "↕"}
+                    </span>
+                  </button>
+                </th>
                 <th className="p-3">Actions</th>
               </tr>
             </thead>
 
             <tbody className="items-center">
-              {filteredProducts.map((p) => (
+              {sortedProducts.map((p) => (
                 <tr key={p.id} className="border-t ">
                   <td className="p-3">
                     {p.bannerImageUrl ? (
@@ -164,7 +318,7 @@ export function ProductsPageClient() {
                   <td className="p-3 font-medium">{p.name}</td>
                   <td className="p-3">
                     {p.category ? (
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold">
+                      <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
                         {p.category}
                       </span>
                     ) : (
@@ -172,13 +326,45 @@ export function ProductsPageClient() {
                     )}
                   </td>
                   <td className="p-3 ">{p.productCode}</td>
+                  <td className="p-3 ">
+                    {p.createdAt
+                      ? new Date(p.createdAt).toLocaleDateString(undefined, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                        })
+                      : "-"}
+                  </td>
+                  <td className="p-3">
+                    <span
+                      className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${p.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                    >
+                      {p.isActive ? "Published" : "Unpublished"}
+                    </span>
+                  </td>
 
-                  <td className="p-3 flex gap-2 mt-4">
+                  <td className="p-3 flex flex-wrap gap-2 mt-4">
                     <Button
                       onClick={() => router.push(`/admin/Product/edit/${p.id}`)}
                       className="cursor-pointer rounded"
                     >
                       Edit
+                    </Button>
+
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={publishingId === p.id}
+                      onClick={() => togglePublishStatus(p.id, !p.isActive)}
+                      className="gap-1.5 cursor-pointer"
+                    >
+                      {publishingId === p.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : p.isActive ? (
+                        "Unpublish"
+                      ) : (
+                        "Publish"
+                      )}
                     </Button>
 
                     <Button
@@ -237,4 +423,3 @@ export function ProductsPageClient() {
     </div>
   );
 }
-
