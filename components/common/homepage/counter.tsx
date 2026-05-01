@@ -14,7 +14,7 @@ const Counter = () => {
     { number: "1984", label: "Founded in London", prefix: "", suffix: "" },
     { number: "9001", label: "Quality Certified", prefix: "ISO ", suffix: "" },
     { number: "10", label: "Countries Served", prefix: "", suffix: "+" },
-    { number: "2000", label: "Trade Clients", prefix: "", suffix: "+" },
+    { number: "20K", label: "Trade Clients", prefix: "", suffix: "+" },
   ]);
 
   useEffect(() => {
