@@ -599,7 +599,7 @@ const Page = () => {
           </div>
           <div className="max-w-6xl mx-auto px-6 text-center relative z-10">
             <h1 className="text-4xl md:text-5xl font-semibold mb-6">
-              Become an Authorized Distribution Partner
+              Become an Authorised Distribution Partner
             </h1>
             <p className="max-w-3xl mx-auto text-white/80 text-sm md:text-base leading-7">
               Expand your business with premium structured cabling, networking,
@@ -625,9 +625,9 @@ const Page = () => {
             <div className="space-y-4">
               {(
                 [
-                  [IconBuildingStore, "Competitive Dealer Margins"],
+                  [IconBuildingStore, "Strong Margins & Reliable Supply"],
 
-                  [IconBriefcase, "Marketing & Technical Enablement"],
+                  [IconBriefcase, "Sales, Marketing & Technical Support"],
                 ] as Array<[React.ComponentType<any>, string]>
               ).map(([Icon, text], i) => (
                 <div

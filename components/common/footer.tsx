@@ -91,17 +91,23 @@ const Footer = () => {
               <Link href="/category?categoryId=41b19390-5260-43e8-8d0c-08312ee4e041">
                 SPEEDY RJ45
               </Link>
+              <Link href="/category?categoryId=36b80b17-d588-4b6a-9770-5ec64edd9f36">
+                19" Rack Accessories
+              </Link>
+              <Link href="/category?categoryId=278f8140-ff14-462a-b3e1-15c50badd951">
+                CONNECT + Range
+              </Link>
               <Link href="/category?categoryId=0d908864-f7de-4e86-8aa3-3f012e528785">
                 Multimedia Connectors
               </Link>
               <Link href="/category?categoryId=5abc4a47-5cc5-439f-8df4-d02a193f142f">
-                Mini Media
+                miniMEDIA
               </Link>
               <Link href="/category?categoryId=3bb2c7a9-3f3e-4b9d-be7f-428caafab3d3">
                 Plugs for Data and Voices
               </Link>
               <Link href="/category?categoryId=796cce52-c1ab-4af6-b6f1-2e8c974f522a">
-                PCB Mounts
+                PCB Mount
               </Link>
               <Link href="/category?categoryId=73f5dda5-9a70-42c9-b07f-e42bebc57de6">
                 Tools
@@ -123,7 +129,7 @@ const Footer = () => {
               <Link href="/about">About TUK</Link>
               <Link href="/distributor-enquiry">Become a Distributor</Link>
               <Link href="/distributor">TUK Distributor</Link>
-              <Link href="/contact">Contact Page</Link>
+              <Link href="/contact-us">Contact Us</Link>
             </div>
           </div>
 

@@ -118,7 +118,7 @@ const CategoryDefine = ({ category, sort, setSort }: any) => {
     };
 
     fetchData();
-  }, []);
+  }, [sort]);
 
   const selectedCat = categoryList.find((c: any) => c.name === category);
 

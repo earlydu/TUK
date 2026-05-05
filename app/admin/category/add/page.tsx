@@ -154,13 +154,13 @@ export default function AddCategoryPage() {
         </div>
 
         {/* DESCRIPTION */}
-        <div>
+        {/* <div>
           <label>Description</label>
           <Textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
           />
-        </div>
+        </div> */}
 
         {/* BUTTON */}
         <Button

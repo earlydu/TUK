@@ -1,21 +1,14 @@
 import { db } from "@/src/db";
 import { products } from "@/src/db/schema";
-import { eq, inArray } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
-// In-memory store of product IDs marked as "New"
-let newProductIds: string[] = [];
-
-// GET — return full product objects for all "new" product IDs
+// GET — return full product objects that are marked as new in the database
 export async function GET() {
   try {
-    if (newProductIds.length === 0) {
-      return Response.json([]);
-    }
-
     const newProducts = await db
       .select()
       .from(products)
-      .where(inArray(products.id, newProductIds));
+      .where(eq(products.isNew, true));
 
     return Response.json(newProducts);
   } catch (error) {
@@ -23,7 +16,7 @@ export async function GET() {
   }
 }
 
-// POST — add or remove a product ID from the new products list
+// POST — update the product's isNew flag in the database
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -33,15 +26,15 @@ export async function POST(req: Request) {
       return Response.json({ error: "productId is required" }, { status: 400 });
     }
 
-    if (isNew) {
-      if (!newProductIds.includes(productId)) {
-        newProductIds.push(productId);
-      }
-    } else {
-      newProductIds = newProductIds.filter((id) => id !== productId);
-    }
+    await db.update(products).set({ isNew: Boolean(isNew) }).where(eq(products.id, productId));
 
-    return Response.json({ success: true, newProductIds });
+    const product = await db
+      .select()
+      .from(products)
+      .where(eq(products.id, productId))
+      .then((rows) => rows[0]);
+
+    return Response.json({ success: true, product });
   } catch (error) {
     return Response.json({ success: false, error: String(error) }, { status: 500 });
   }

@@ -6,7 +6,6 @@ import { IconHeart, IconArrowUpRight } from "@tabler/icons-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-// ✅ helper
 const getWishlist = () => {
   return JSON.parse(localStorage.getItem("wishlist") || "[]");
 };
@@ -31,12 +30,10 @@ const FeaturedProducts = () => {
 
     fetchProducts();
 
-    // ✅ load wishlist
     const items = getWishlist();
     setWishlistIds(items.map((i: any) => i.id));
   }, []);
 
-  // ✅ toggle wishlist
   const handleWishlist = (product: any) => {
     let wishlist = getWishlist();
 
@@ -65,26 +62,42 @@ const FeaturedProducts = () => {
   };
 
   if (loading) {
-    return <p className="text-center py-10">Loading featured products...</p>;
+    return (
+      <section className="w-full bg-white font-poppins">
+        <div className="max-w-6xl mx-auto px-4 py-5 space-y-6">
+          <div className="text-center">
+            <h2 className="text-2xl xl:text-3xl font-bold">
+              Featured Products
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <div
+                key={i}
+                className="h-64 rounded-xl bg-gray-100 animate-pulse"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
   }
 
   return (
     <section className="w-full bg-white font-poppins">
-      <div className="max-w-6xl mx-auto px-4 py-5 space-y-10">
-        {/* Heading */}
+      <div className="max-w-6xl mx-auto px-4 py-5 space-y-6">
         <div className="text-center">
           <h2 className="text-2xl xl:text-3xl font-bold">Featured Products</h2>
         </div>
 
-        {/* Grid */}
-        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6">
           {products.slice(0, 4).map((item: any) => (
             <Link href={`/product/${item.slug}`} key={item.id}>
-              {/* Card */}
-              <div className="border rounded-xl overflow-hidden hover:shadow-lg transition h-full flex flex-col">
+              <div className="border rounded-xl overflow-hidden hover:shadow-lg transition h-full flex flex-col bg-white">
                 {/* Image */}
-                <div className="relative w-full h-56">
-                  <span className="absolute top-4 left-4 bg-[#0300A7] text-white text-xs px-3 py-1 rounded-full z-10">
+                <div className="relative w-full h-28 sm:h-40 xl:h-56">
+                  <span className="absolute top-2 left-2 bg-[#0300A7] text-white text-[9px] sm:text-xs px-2 py-1 rounded-full z-10 font-semibold">
                     FEATURED
                   </span>
 
@@ -92,37 +105,36 @@ const FeaturedProducts = () => {
                     src={item.bannerImageUrl || "/image/arival1.png"}
                     alt={item.name}
                     fill
-                    className="object-contain"
+                    className="object-contain p-2"
                   />
                 </div>
 
                 {/* Content */}
-                <div className="p-6 space-y-4 flex flex-col flex-1">
-                  <h3 className="text-lg font-semibold line-clamp-2">
+                <div className="p-2 sm:p-4 xl:p-6 space-y-2 sm:space-y-3 flex flex-col flex-1">
+                  <h3 className="text-[12px] sm:text-base xl:text-lg font-semibold line-clamp-2 min-h-[34px] sm:min-h-[48px] leading-snug">
                     {item.name}
                   </h3>
 
-                  <p className="text-sm text-gray-500 line-clamp-2">
+                  <p className="text-[10px] sm:text-sm text-gray-500 line-clamp-2 min-h-[28px] sm:min-h-[40px]">
                     {item.shortDescription}
                   </p>
 
-                  {/* Bottom fixed */}
                   <div className="flex justify-between items-center mt-auto">
-                    <span className="flex items-center gap-1 text-[#0300A7] font-semibold text-sm">
+                    <span className="flex items-center gap-1 text-[#0300A7] font-semibold text-[10px] sm:text-sm">
                       View Specs
-                      <IconArrowUpRight size={16} />
+                      <IconArrowUpRight size={12} />
                     </span>
 
-                    {/* ❤️ Wishlist */}
                     <button
                       onClick={(e) => {
                         e.preventDefault();
+                        e.stopPropagation();
                         handleWishlist(item);
                       }}
-                      className="border rounded-full p-2 hover:bg-gray-100 transition"
+                      className="border rounded-full p-1.5 sm:p-2 hover:bg-gray-100 transition"
                     >
                       <IconHeart
-                        size={18}
+                        size={14}
                         className={
                           wishlistIds.includes(item.id)
                             ? "fill-red-500 text-red-500"

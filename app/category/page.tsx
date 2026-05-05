@@ -12,7 +12,7 @@ import { CategoryFilter } from "./CategoryFilter";
 export const dynamic = "force-dynamic";
 
 export default function Page() {
-  const [sort, setSort] = useState("Latest");
+  const [sort, setSort] = useState("latest");
   const [category, setCategory] = useState("All Categories");
   const [categories, setCategories] = useState<any[]>([]);
 
@@ -70,7 +70,7 @@ export default function Page() {
       <section className="bg-gray-100 w-full py-1 lg:py-10 font-poppins text-sm">
         <div className="max-w-6xl mx-auto px-4">
           {/* MOBILE FILTER */}
-          <div className="lg:hidden flex items-center gap-3 mb-6">
+          {/* <div className="lg:hidden flex items-center gap-3 mb-6">
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
@@ -89,7 +89,30 @@ export default function Page() {
               onChange={(e) => setSort(e.target.value)}
               className="border rounded-lg px-4 py-2 text-sm bg-white font-poppins"
             >
-              <option value="Latest">Latest</option>
+              <option value="latest">Latest</option>
+              <option value="name">Name</option>
+            </select>
+          </div> */}
+          <div className="lg:hidden flex items-center justify-between gap-3 mb-6 bg-white p-3 rounded-xl shadow-sm">
+            <select
+              value={category}
+              onChange={(e) => handleCategoryChange(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm bg-white w-1/2"
+            >
+              <option value="All Categories">All Categories</option>
+              {categories.map((cat: any) => (
+                <option key={cat.id} value={cat.name}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value)}
+              className="border rounded-lg px-3 py-2 text-sm bg-white w-1/2"
+            >
+              <option value="latest">Latest</option>
               <option value="name">Name</option>
             </select>
           </div>

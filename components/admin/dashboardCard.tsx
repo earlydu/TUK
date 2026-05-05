@@ -4,7 +4,9 @@ import { ShoppingCart, Package, Truck, Boxes } from "lucide-react";
 import { StatCard } from "./statCard";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 type RecentProduct = {
   id: string;
@@ -27,6 +29,7 @@ type RecentCategory = {
 export function DashboardCards() {
   const [stats, setStats] = useState<any>(null);
   const [data, setData] = useState<any>(null);
+  const router = useRouter();
 
   // ✅ Fetch both APIs together
   useEffect(() => {
@@ -131,7 +134,7 @@ export function DashboardCards() {
 
           <CardContent>
             {formattedProducts.map((p: any) => (
-              <div key={p.id} className="flex gap-3 p-3 border-b">
+              <div key={p.id} className="flex gap-3 p-3 border-b items-center">
                 <img
                   src={p.image || "/no-image.png"}
                   alt={p.name}
@@ -144,6 +147,12 @@ export function DashboardCards() {
                   <p className="font-medium">{p.name}</p>
                   <p className="text-sm text-gray-500">{p.sku}</p>
                 </div>
+                <Button
+                  size="sm"
+                  onClick={() => router.push(`/admin/Product/edit/${p.id}`)}
+                >
+                  Edit
+                </Button>
               </div>
             ))}
           </CardContent>

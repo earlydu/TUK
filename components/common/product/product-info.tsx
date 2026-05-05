@@ -181,7 +181,10 @@ export default function ProductInfo({ product }: ProductInfoProps) {
 
       <div className="flex flex-row flex-wrap gap-4 w-full font-poppins">
         {/* Request Quote */}
-        <Link href="/request-quote" className="flex-1">
+        <Link
+          href={`/request-quote?productId=${product?.id || ""}`}
+          className="flex-1"
+        >
           <Button className="w-full h-14 sm:h-12 rounded-full cursor-pointer bg-[#0b0bbf] hover:bg-[#0b0bbf] text-white text-base sm:text-sm font-medium flex items-center justify-center gap-2 px-6">
             <IconFileText size={20} />
             Request Quote

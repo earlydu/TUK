@@ -1,4 +1,5 @@
 import { db } from "@/src/db";
+import { eq } from "drizzle-orm";
 import {
   products,
   productImages,
@@ -30,7 +31,9 @@ export async function POST(req: Request) {
       images = [], // ✅ ADD THIS (gallery images)
       content,
       isFeatured = false,
+      isNew = false,
       pdfUrl,
+      relatedProducts = [],
     } = body;
 
     // ✅ Validation
@@ -58,6 +61,7 @@ export async function POST(req: Request) {
           content,
           pdfUrl,
           isFeatured: Boolean(isFeatured),
+          isNew: Boolean(isNew),
         })
         .returning();
 
@@ -129,7 +133,50 @@ export async function POST(req: Request) {
         );
       }
 
-      
+      // 🔗 Related Categories -> save valid related product IDs
+      const relatedCategories: string[] = body.relatedCategories || [];
+      const relatedProducts: string[] = body.relatedProducts || [];
+
+      const relatedRows: { productId: string; relatedProductId: string }[] = [];
+
+      if (relatedProducts.length > 0) {
+        relatedRows.push(
+          ...relatedProducts.map((relatedProductId: string) => ({
+            productId,
+            relatedProductId,
+          })),
+        );
+      }
+
+      if (relatedCategories.length > 0) {
+        for (const categoryId of relatedCategories) {
+          const categoryProducts = await tx
+            .select({ id: products.id })
+            .from(products)
+            .where(eq(products.categoryId, categoryId));
+
+          const validProduct = categoryProducts.find(
+            (productRow) => productRow.id !== productId,
+          );
+
+          if (validProduct) {
+            relatedRows.push({
+              productId,
+              relatedProductId: validProduct.id,
+            });
+          }
+        }
+      }
+
+      if (relatedRows.length > 0) {
+        const uniqueRows = Array.from(
+          new Map(
+            relatedRows.map((row) => [row.relatedProductId, row]),
+          ).values(),
+        );
+
+        await tx.insert(relatedProductsTable).values(uniqueRows);
+      }
 
       return product;
     });

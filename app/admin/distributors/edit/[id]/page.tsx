@@ -27,7 +27,17 @@ export default function EditDistributor() {
       const res = await fetch("/api/distributors");
       const data = await res.json();
       const item = data.find((d: any) => d.id === id);
-      setForm(item);
+
+      if (item) {
+        setForm({
+          name: item.name || "",
+          slug: item.slug || "",
+          description: item.description || "",
+          image: item.image || "",
+          visitUrl: item.visitUrl || "",
+        });
+        setPreview(item.image || "");
+      }
     };
 
     fetchData();
@@ -152,9 +162,9 @@ export default function EditDistributor() {
         </div>
 
         {/* Preview */}
-        {preview && (
+        {(preview || form.image) && (
           <img
-            src={preview}
+            src={preview || form.image}
             alt="preview"
             className="w-24 h-24 object-cover rounded"
           />

@@ -19,26 +19,12 @@ const Arrivals = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        // First try admin-curated new products
-        const newRes = await fetch("/api/products/new");
-        const newData = await newRes.json();
-
-        if (Array.isArray(newData) && newData.length > 0) {
-          setProducts(newData);
-        } else {
-          // Fallback: latest products by createdAt
-          const res = await fetch("/api/products/new-arrivals");
-          const data = await res.json();
-          setProducts(Array.isArray(data) ? data : []);
-        }
+        const res = await fetch("/api/products/new-arrivals");
+        const data = await res.json();
+        setProducts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching products:", error);
-        // Hard fallback
-        try {
-          const res = await fetch("/api/products/new-arrivals");
-          const data = await res.json();
-          setProducts(Array.isArray(data) ? data : []);
-        } catch {}
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -105,13 +91,12 @@ const Arrivals = () => {
           <h2 className="text-2xl xl:text-3xl font-bold">New Arrivals</h2>
         </div>
 
-        <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8 items-stretch">
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6 items-stretch">
           {products.slice(0, 4).map((item: any) => (
             <Link key={item.id} href={`/product/${item.slug}`}>
               <div className="bg-background border rounded-xl overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col">
-                <div className="relative w-full h-56">
-                  {/* Always show NEW badge for admin-curated products */}
-                  <span className="absolute top-4 left-4 bg-[#FB923C] text-white text-xs px-3 py-1 rounded-full z-10 font-semibold">
+                <div className="relative w-full h-28 sm:h-40 xl:h-56">
+                  <span className="absolute top-2 left-2 bg-[#FB923C] text-white text-[9px] sm:text-xs px-2 py-1 rounded-full z-10 font-semibold">
                     NEW
                   </span>
 
@@ -119,30 +104,26 @@ const Arrivals = () => {
                     src={item.bannerImageUrl || "/image/arival1.png"}
                     alt={item.name}
                     fill
-                    className="object-contain"
+                    className="object-contain p-2"
                   />
                 </div>
 
-                <div className="p-6 space-y-4 flex flex-col flex-grow">
-                  <h3 className="text-lg font-semibold">{item.name}</h3>
+                <div className="p-2 sm:p-4 xl:p-6 space-y-2 sm:space-y-3 flex flex-col flex-grow">
+                  <h3 className="text-[12px] sm:text-base xl:text-lg font-semibold leading-snug line-clamp-2 min-h-[32px] sm:min-h-[48px]">
+                    {item.name}
+                  </h3>
 
-                  {/* <p className="text-gray-500 text-sm line-clamp-3">
-                    {item.description ||
-                      item.shortDescription ||
-                      "No description"}
-                  </p> */}
-
-                  <p className="text-black text-sm font-semibold">
+                  <p className="text-black text-[10px] sm:text-sm font-semibold">
                     ProductCode:&nbsp;
-                    <span className="text-gray-700 text-xs">
+                    <span className="text-gray-700 text-[9px] sm:text-xs">
                       {item.productCode || item.sku || "N/A"}
                     </span>
                   </p>
 
-                  <div className="flex items-center justify-between  mt-auto">
-                    <span className="flex items-center gap-1 text-[#0300A7] font-semibold text-sm">
+                  <div className="flex items-center justify-between mt-auto">
+                    <span className="flex items-center gap-1 text-[#0300A7] font-semibold text-[10px] sm:text-sm">
                       View Specs
-                      <IconArrowUpRight size={16} />
+                      <IconArrowUpRight size={12} />
                     </span>
 
                     <button
@@ -151,10 +132,10 @@ const Arrivals = () => {
                         e.stopPropagation();
                         handleWishlist(item);
                       }}
-                      className="border rounded-full p-2 hover:bg-muted transition"
+                      className="border rounded-full p-1.5 sm:p-2 hover:bg-muted transition"
                     >
                       <IconHeart
-                        size={18}
+                        size={14}
                         className={
                           wishlistIds.includes(item.id)
                             ? "fill-red-500 text-red-500"

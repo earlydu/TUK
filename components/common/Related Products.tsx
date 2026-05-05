@@ -41,7 +41,9 @@ export default function RelatedProducts({
         const data = await res.json();
 
         if (Array.isArray(data)) {
-          const filtered = data.filter((item) => item.id !== currentProductId);
+          const filtered = data
+            .filter((item) => item.id !== currentProductId)
+            .slice(0, 6);
           setRelated(filtered);
         } else {
           setRelated([]);
@@ -101,7 +103,7 @@ export default function RelatedProducts({
         <p className="text-gray-400">No related products found</p>
       )}
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 font-poppins">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 font-poppins">
         {Array.isArray(related) &&
           related.map((item) => (
             <Link key={item.id} href={`/product/${item.slug}`}>

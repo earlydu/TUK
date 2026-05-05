@@ -169,7 +169,7 @@ export default function EditCategoryPage() {
           </div>
 
           {/* DESCRIPTION */}
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <Label>Description</Label>
             <Textarea
               value={form.description}
@@ -180,7 +180,7 @@ export default function EditCategoryPage() {
                 })
               }
             />
-          </div>
+          </div> */}
 
           {/* BUTTON */}
           <Button onClick={handleUpdate} className="w-full cursor-pointer">

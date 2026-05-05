@@ -173,9 +173,13 @@ const page = () => {
                     <Button
                       onClick={() => window.open(item.visitUrl, "_blank")}
                       variant="secondary"
-                      className=" -mb-4 w-full cursor-pointer font-poppins   flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200"
+                      className="-mb-4 w-full cursor-pointer font-poppins flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200"
                     >
-                      Visit Store
+                      {item.name.trim().toLowerCase() ===
+                      "become an authorised tuk distributor"
+                        ? "Apply Now"
+                        : "Visit Store"}
+
                       <IconExternalLink size={16} />
                     </Button>
                   </CardContent>

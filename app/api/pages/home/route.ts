@@ -5,7 +5,7 @@ let homePageData = {
     { number: '1984', label: 'Founded in London', prefix: '', suffix: '' },
     { number: '9001', label: 'Quality Certified', prefix: 'ISO ', suffix: '' },
     { number: '10', label: 'Countries Served', prefix: '', suffix: '+' },
-    { number: '20000', label: 'Trade Clients', prefix: '', suffix: '+' },
+    { number: '20K', label: 'Trade Clients', prefix: '', suffix: '+' },
   ],
   about: {
     sectionLabel: 'ABOUT TUK LTD',
@@ -19,7 +19,7 @@ let homePageData = {
       'OEM production of related products',
     ],
     description:
-      'TUK supplies manufacturers, wholesalers and distributors but does not cater for retailers or the public.',
+      'TUK supplies manufacturers, wholesalers and distributors, focusing primarily on trade customers. ',
     badges: [
       'ISO 9001 Certified',
       'B2B Trade Only',

@@ -5,6 +5,7 @@ import {
   productSpecifications,
   productImages,
   productDiTerms,
+  relatedProducts as relatedProductsTable,
 } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -60,19 +61,42 @@ export async function GET(
       .where(eq(productDiTerms.productId, id));
 
       const distributorsData = await db
-  .select({
-    distributor: distributors,
-  })
-  .from(productDistributor)
-  .leftJoin(
-    distributors,
-    eq(productDistributor.distributorsId, distributors.id)
-  )
-  .where(eq(productDistributor.productId, id));
+      .select({
+        distributor: distributors,
+      })
+      .from(productDistributor)
+      .leftJoin(
+        distributors,
+        eq(productDistributor.distributorsId, distributors.id),
+      )
+      .where(eq(productDistributor.productId, id));
 
-  const distributorsList = distributorsData
-  .map((item) => item.distributor)
-  .filter(Boolean);
+    const distributorsList = distributorsData
+      .map((item) => item.distributor)
+      .filter(Boolean);
+
+    const relatedProducts = await db
+      .select({ relatedProductId: relatedProductsTable.relatedProductId })
+      .from(relatedProductsTable)
+      .where(eq(relatedProductsTable.productId, id));
+
+    const relatedProductIds = relatedProducts.map(
+      (item) => item.relatedProductId,
+    );
+
+    const relatedCategoriesQuery = await db
+      .select({ categoryId: products.categoryId })
+      .from(relatedProductsTable)
+      .leftJoin(products, eq(relatedProductsTable.relatedProductId, products.id))
+      .where(eq(relatedProductsTable.productId, id));
+
+    const relatedCategoryIds = Array.from(
+      new Set(
+        relatedCategoriesQuery
+          .map((item) => item.categoryId)
+          .filter(Boolean),
+      ),
+    );
 
     return NextResponse.json({
       ...product,
@@ -80,7 +104,9 @@ export async function GET(
       specifications,
       images,
       diTerms,
-       distributors: distributorsList,
+      distributors: distributorsList,
+      relatedProducts: relatedProductIds,
+      relatedCategories: relatedCategoryIds,
     });
   } catch (error) {
     console.error("GET ERROR:", error);
@@ -122,6 +148,8 @@ export async function PUT(
     if (body.pdfUrl !== undefined) updateData.pdfUrl = body.pdfUrl;
     if (body.content !== undefined) updateData.content = body.content;
     if (body.isActive !== undefined) updateData.isActive = body.isActive;
+    if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
+    if (body.isNew !== undefined) updateData.isNew = body.isNew;
 
     if (Object.keys(updateData).length > 0) {
       await db.update(products).set(updateData).where(eq(products.id, id));
@@ -197,7 +225,58 @@ export async function PUT(
           body.distributors.map((distId: string) => ({
             productId: id,
             distributorsId: distId,
-          }))
+          })),
+        );
+      }
+    }
+
+    if (body.relatedCategories !== undefined) {
+      await db
+        .delete(relatedProductsTable)
+        .where(eq(relatedProductsTable.productId, id));
+
+      if (body.relatedCategories?.length > 0) {
+        const relatedRows: { productId: string; relatedProductId: string }[] = [];
+
+        for (const categoryId of body.relatedCategories) {
+          const categoryProducts = await db
+            .select({ id: products.id })
+            .from(products)
+            .where(eq(products.categoryId, categoryId));
+
+          const validProduct = categoryProducts.find(
+            (productRow) => productRow.id !== id,
+          );
+
+          if (validProduct) {
+            relatedRows.push({
+              productId: id,
+              relatedProductId: validProduct.id,
+            });
+          }
+        }
+
+        if (relatedRows.length > 0) {
+          const uniqueRows = Array.from(
+            new Map(
+              relatedRows.map((row) => [row.relatedProductId, row]),
+            ).values(),
+          );
+
+          await db.insert(relatedProductsTable).values(uniqueRows);
+        }
+      }
+    } else if (body.relatedProducts !== undefined) {
+      await db
+        .delete(relatedProductsTable)
+        .where(eq(relatedProductsTable.productId, id));
+
+      if (body.relatedProducts?.length > 0) {
+        await db.insert(relatedProductsTable).values(
+          body.relatedProducts.map((relatedProductId: string) => ({
+            productId: id,
+            relatedProductId,
+          })),
         );
       }
     }

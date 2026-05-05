@@ -119,7 +119,7 @@ const Banner = () => {
         <CarouselContent>
           {slides.map((slide, index) => (
             <CarouselItem key={index}>
-              <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[75vh] lg:h-[90vh]">
+              <div className="relative w-full h-[30vh] sm:h-[40vh] md:h-[55vh] lg:h-[60vh]">
                 <Image
                   src={slide.img}
                   alt="banner"

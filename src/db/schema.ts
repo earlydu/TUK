@@ -53,6 +53,7 @@ export const products = pgTable("products", {
   pdfUrl: text("pdf_url"),
   content: json("content"),
   isFeatured: boolean("is_featured").default(false),
+  isNew: boolean("is_new").default(false),
   isActive: boolean("is_active").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });

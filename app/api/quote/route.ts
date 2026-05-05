@@ -2,8 +2,11 @@ import { sendEmail } from "@/src/lib/mailer";
 
 export async function POST(req: Request) {
   try {
-    const { name, company, email, phone, productId, requirement, business } =
+    const { name, company, email, phone, productIds, productId, requirement, business } =
       await req.json();
+
+    // Handle both old productId and new productIds for backward compatibility
+    const products = productIds || (productId ? [productId] : []);
 
     const message = `
 New Quote Request:
@@ -12,8 +15,8 @@ Name: ${name}
 Company: ${company}
 Email: ${email}
 Phone: ${phone}
-business:${business}
-Product ID: ${productId}
+Business: ${business}
+Products of Interest: ${products.join(", ")}
 
 Requirement:
 ${requirement}

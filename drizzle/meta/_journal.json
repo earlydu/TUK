@@ -176,6 +176,20 @@
       "when": 1777012040987,
       "tag": "0024_spotty_nuke",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1777646148316,
+      "tag": "0025_sturdy_weapon_omega",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1777893852806,
+      "tag": "0026_curvy_dagger",
+      "breakpoints": true
     }
   ]
 }

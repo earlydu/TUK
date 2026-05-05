@@ -8,17 +8,17 @@ let aboutPageData = {
   hero: {
     title: 'High-Performance Cabling Built to Last',
     subtitle:
-      ' manufacturing excellence in voice and data infrastructure since 1984.',
+      ' manufacturing excellence in voice and data infrastructure .',
     badges: [
       { icon: 'IconShieldCheck', text: 'ISO 9001:2015 Certified' },
       { icon: 'IconMapPin', text: 'Based in London, UK' },
     ],
   },
   heritage: {
-    subtitle: 'Established 1984',
+    subtitle: '',
     title: 'Our Heritage of Innovation',
     content: [
-      'Originally founded in 1984, TUK Ltd is based in South West London and has manufacturing facilities both in the UK and Far East. For nearly four decades, we have been at the forefront of the cabling industry.',
+      'TUK Ltd is based in South West London and has manufacturing facilities both in the UK and Far East. For nearly four decades, we have been at the forefront of the cabling industry.',
       'The quality of our products is ensured through ISO 9001 manufacturing and a two-stage quality assurance procedure, making us a trusted partner for telecommunications, data centres, and enterprise networking.',
       'Our commitment to excellence has allowed us to grow from a small local supplier to an international distributor of high-performance RJ45 solutions, multimedia connectors, and modular patch panels.',
     ],

@@ -10,7 +10,7 @@ import { CategoryFilter } from "../category/CategoryFilter";
 
 export default function Page() {
   const [category, setCategory] = useState("All Categories");
-  const [sort, setSort] = useState("Latest");
+  const [sort, setSort] = useState("latest");
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState<any[]>([]);
@@ -129,7 +129,7 @@ export default function Page() {
               onChange={(e) => setSort(e.target.value)}
               className="border rounded-lg px-4 py-2 text-sm bg-white font-poppins"
             >
-              <option value="Latest">Latest</option>
+              <option value="latest">Latest</option>
               <option value="name">Name</option>
             </select>
           </div>

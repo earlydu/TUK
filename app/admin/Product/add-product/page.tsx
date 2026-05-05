@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,6 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RichEditor from "@/components/common/RichEditor";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { IconChevronDown } from "@tabler/icons-react";
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -28,6 +31,7 @@ export default function AddProductPage() {
     sku: "",
     productCode: "",
     isFeatured: false,
+    isNew: false,
     // categoryId: "",
     // selectedRelated: "",
   });
@@ -48,7 +52,9 @@ export default function AddProductPage() {
   const [categoriesList, setCategoriesList] = useState<any[]>([]);
   const [categoryId, setCategoryId] = useState<string>("");
   const [relatedProductsList, setRelatedProductsList] = useState<any[]>([]);
-  const [selectedRelated, setselectedRelated] = useState<string>("");
+  const [selectedRelated, setselectedRelated] = useState<string[]>([]);
+  const [isRelatedDropdownOpen, setIsRelatedDropdownOpen] = useState(false);
+  const [relatedCategoriesSearch, setRelatedCategoriesSearch] = useState("");
   const [pdf, setPdf] = useState<string>("");
   const [pdfLoading, setPdfLoading] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
@@ -180,7 +186,6 @@ export default function AddProductPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Call both APIs in parallel
         const [categoryRes, distributorRes] = await Promise.all([
           fetch("/api/category"),
           fetch("/api/distributors"),
@@ -189,11 +194,8 @@ export default function AddProductPage() {
         const categoryData = await categoryRes.json();
         const distributorData = await distributorRes.json();
 
-        // Set category data
         setCategoriesList(categoryData);
         setRelatedProductsList(categoryData);
-
-        // Set distributor data (create state if not exists)
         setDistributorsList(distributorData);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -218,8 +220,9 @@ export default function AddProductPage() {
           sku: form.sku,
           productCode: form.productCode,
           categoryId,
-          relatedProducts: selectedRelated,
+          relatedCategories: selectedRelated,
           isFeatured: form.isFeatured,
+          isNew: form.isNew,
           features,
           specs,
           techspecs,
@@ -335,7 +338,15 @@ export default function AddProductPage() {
 
             <Select onValueChange={(value) => setCategoryId(value as string)}>
               <SelectTrigger>
-                <SelectValue children={() => {return categoryId ? categoriesList.find((cat) => cat.id === categoryId)?.name : "Select Category"}} placeholder="Select Category" />
+                <SelectValue
+                  children={() => {
+                    return categoryId
+                      ? categoriesList.find((cat) => cat.id === categoryId)
+                          ?.name
+                      : "Select Category";
+                  }}
+                  placeholder="Select Category"
+                />
               </SelectTrigger>
 
               <SelectContent>
@@ -348,23 +359,108 @@ export default function AddProductPage() {
             </Select>
           </div>
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">
-            <h3 className="text-lg font-semibold">Related Products</h3>
+            <h3 className="text-lg font-semibold">Related Categories</h3>
 
-            <Select
-              onValueChange={(value) => setselectedRelated(value as string)}
-            >
-              <SelectTrigger>
-                <SelectValue children={() => {return selectedRelated ? relatedProductsList.find((prod) => prod.id === selectedRelated)?.name : "Select Related Product"}} placeholder="Select Related Product" />
-              </SelectTrigger>
+            <div className="relative related-dropdown">
+              <Button
+                variant="outline"
+                onClick={() => setIsRelatedDropdownOpen(!isRelatedDropdownOpen)}
+                className="w-full justify-between pl-3 pr-3"
+              >
+                {selectedRelated.length > 0
+                  ? `${selectedRelated.length} category(s) selected`
+                  : "Select related categories..."}
+                <IconChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
 
-              <SelectContent>
-                {relatedProductsList.map((cat) => (
-                  <SelectItem key={cat.id} value={String(cat.id)}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {isRelatedDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden">
+                  <div className="p-2 border-b">
+                    <Input
+                      placeholder="Search categories..."
+                      value={relatedCategoriesSearch}
+                      onChange={(e) =>
+                        setRelatedCategoriesSearch(e.target.value)
+                      }
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {relatedProductsList
+                      .filter((category) =>
+                        category.name
+                          .toLowerCase()
+                          .includes(relatedCategoriesSearch.toLowerCase()),
+                      )
+                      .map((category) => {
+                        const isSelected = selectedRelated.includes(
+                          category.id,
+                        );
+                        return (
+                          <div
+                            key={category.id}
+                            className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
+                            onClick={() => {
+                              setselectedRelated((prev) =>
+                                isSelected
+                                  ? prev.filter((id) => id !== category.id)
+                                  : [...prev, category.id],
+                              );
+                            }}
+                          >
+                            <Checkbox
+                              checked={isSelected}
+                              className="pointer-events-none"
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium">
+                                {category.name}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    {relatedProductsList.filter((category) =>
+                      category.name
+                        .toLowerCase()
+                        .includes(relatedCategoriesSearch.toLowerCase()),
+                    ).length === 0 && (
+                      <div className="p-3 text-sm text-gray-500 text-center">
+                        No categories found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {selectedRelated.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedRelated.map((id) => {
+                  const category = relatedProductsList.find((c) => c.id === id);
+                  return category ? (
+                    <Badge
+                      key={id}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {category.name}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setselectedRelated((prev) =>
+                            prev.filter((cid) => cid !== id),
+                          )
+                        }
+                        className="ml-1 text-muted-foreground hover:text-foreground"
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ) : null;
+                })}
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow space-y-4">
@@ -590,26 +686,50 @@ export default function AddProductPage() {
           </Tabs>
         </div>
 
-        <div className="flex items-center gap-3 mt-4">
-          <input
-            type="checkbox"
-            id="isFeatured"
-            checked={form.isFeatured}
-            onChange={(e) =>
-              setForm((prev) => ({
-                ...prev,
-                isFeatured: e.target.checked,
-              }))
-            }
-            className="h-4 w-4 accent-blue-600 cursor-pointer"
-          />
+        <div className="flex items-center gap-6 mt-4">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isFeatured"
+              checked={form.isFeatured}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  isFeatured: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 accent-blue-600 cursor-pointer"
+            />
 
-          <label
-            htmlFor="isFeatured"
-            className="text-sm font-medium cursor-pointer"
-          >
-            Mark as Featured Product
-          </label>
+            <label
+              htmlFor="isFeatured"
+              className="text-sm font-medium cursor-pointer"
+            >
+              Mark as Featured Product
+            </label>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              id="isNew"
+              checked={form.isNew}
+              onChange={(e) =>
+                setForm((prev) => ({
+                  ...prev,
+                  isNew: e.target.checked,
+                }))
+              }
+              className="h-4 w-4 accent-green-600 cursor-pointer"
+            />
+
+            <label
+              htmlFor="isNew"
+              className="text-sm font-medium cursor-pointer"
+            >
+              Mark as New Product
+            </label>
+          </div>
         </div>
       </div>
     </div>

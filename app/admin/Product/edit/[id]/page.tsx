@@ -5,6 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -15,6 +17,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RichEditor from "@/components/common/RichEditor";
 import { toast } from "sonner";
+import { IconChevronDown } from "@tabler/icons-react";
 
 export default function EditProductPage() {
   const { id } = useParams();
@@ -31,6 +34,8 @@ export default function EditProductPage() {
     brand: "",
     sku: "",
     productCode: "",
+    isFeatured: false,
+    isNew: false,
   });
 
   const [content, setContent] = useState({
@@ -56,7 +61,9 @@ export default function EditProductPage() {
 
   const [categoriesList, setCategoriesList] = useState<any[]>([]);
   const [relatedProductsList, setRelatedProductsList] = useState<any[]>([]);
-  const [selectedRelated, setselectedRelated] = useState<string>("");
+  const [selectedRelated, setselectedRelated] = useState<string[]>([]);
+  const [isRelatedDropdownOpen, setIsRelatedDropdownOpen] = useState(false);
+  const [relatedCategoriesSearch, setRelatedCategoriesSearch] = useState("");
 
   const [distributorsList, setDistributorsList] = useState<any[]>([]);
   const [selectedDistributors, setSelectedDistributors] = useState<string[]>(
@@ -79,6 +86,8 @@ export default function EditProductPage() {
           brand: product.brand || "",
           sku: product.sku || "",
           productCode: product.productCode || "",
+          isFeatured: product.isFeatured || false,
+          isNew: product.isNew || false,
         });
 
         setCategoryId(data.categoryId || "");
@@ -110,6 +119,9 @@ export default function EditProductPage() {
         setContent(data.content || {});
         setPdf(data.pdfUrl || "");
         setSelectedDistributors(data.distributors?.map((d: any) => d.id) || []);
+        setselectedRelated(
+          data.relatedCategories || data.relatedProducts || [],
+        );
 
         setLoading(false);
       } catch (error) {
@@ -121,7 +133,7 @@ export default function EditProductPage() {
     if (id) fetchProduct();
   }, [id]);
 
-  // 📚 Fetch Categories
+  // 📚 Fetch Categories and Products for selection
   useEffect(() => {
     const fetchData = async () => {
       const [catRes, distRes] = await Promise.all([
@@ -251,8 +263,7 @@ export default function EditProductPage() {
     try {
       setUpdating(true);
 
-      const relatedProductsArray =
-        selectedRelated && selectedRelated.trim() ? [selectedRelated] : [];
+      const relatedCategoriesArray = selectedRelated || [];
 
       const res = await fetch(`/api/products/${id}`, {
         method: "PUT",
@@ -265,13 +276,15 @@ export default function EditProductPage() {
           sku: form.sku,
           productCode: form.productCode,
           categoryId,
+          isFeatured: form.isFeatured,
+          isNew: form.isNew,
           features: features.filter((f) => f?.trim()),
           specs: specs.filter((s) => s?.key && s?.value),
           techspecs: techspecs.filter((s) => s?.key && s?.value),
           diTerms: diTerms.split("|").filter((t) => t?.trim()),
           bannerImageUrl,
           images: galleryImages,
-          relatedProducts: relatedProductsArray,
+          relatedCategories: selectedRelated,
           content,
           pdfUrl: pdf,
           distributors: selectedDistributors,
@@ -413,7 +426,15 @@ export default function EditProductPage() {
               onValueChange={(val) => setCategoryId(val || "")}
             >
               <SelectTrigger>
-                <SelectValue children={() => {return categoryId ? categoriesList.find((cat) => cat.id === categoryId)?.name : "Select Category"}} placeholder="Select Category" />
+                <SelectValue
+                  children={() => {
+                    return categoryId
+                      ? categoriesList.find((cat) => cat.id === categoryId)
+                          ?.name
+                      : "Select Category";
+                  }}
+                  placeholder="Select Category"
+                />
               </SelectTrigger>
 
               <SelectContent>
@@ -427,24 +448,108 @@ export default function EditProductPage() {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">
-            <h3 className="text-lg font-semibold">Related Products</h3>
+            <h3 className="text-lg font-semibold">Related Categories</h3>
 
-            <Select
-              value={selectedRelated}
-              onValueChange={(val) => setselectedRelated(val || "")}
-            >
-              <SelectTrigger>
-                <SelectValue children={() => {return selectedRelated ? relatedProductsList.find((prod) => prod.id === selectedRelated)?.name : "Select Related Product"}}  placeholder="Select Related Product" />
-              </SelectTrigger>
+            <div className="relative related-dropdown">
+              <Button
+                variant="outline"
+                onClick={() => setIsRelatedDropdownOpen(!isRelatedDropdownOpen)}
+                className="w-full justify-between pl-3 pr-3"
+              >
+                {selectedRelated.length > 0
+                  ? `${selectedRelated.length} category(s) selected`
+                  : "Select related categories..."}
+                <IconChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
 
-              <SelectContent>
-                {relatedProductsList.map((prod) => (
-                  <SelectItem key={prod.id} value={prod.id}>
-                    {prod.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {isRelatedDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden">
+                  <div className="p-2 border-b">
+                    <Input
+                      placeholder="Search categories..."
+                      value={relatedCategoriesSearch}
+                      onChange={(e) =>
+                        setRelatedCategoriesSearch(e.target.value)
+                      }
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {relatedProductsList
+                      .filter((category) =>
+                        category.name
+                          .toLowerCase()
+                          .includes(relatedCategoriesSearch.toLowerCase()),
+                      )
+                      .map((category) => {
+                        const isSelected = selectedRelated.includes(
+                          category.id,
+                        );
+                        return (
+                          <div
+                            key={category.id}
+                            className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
+                            onClick={() => {
+                              setselectedRelated((prev) =>
+                                isSelected
+                                  ? prev.filter((id) => id !== category.id)
+                                  : [...prev, category.id],
+                              );
+                            }}
+                          >
+                            <Checkbox
+                              checked={isSelected}
+                              className="pointer-events-none"
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium">
+                                {category.name}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    {relatedProductsList.filter((category) =>
+                      category.name
+                        .toLowerCase()
+                        .includes(relatedCategoriesSearch.toLowerCase()),
+                    ).length === 0 && (
+                      <div className="p-3 text-sm text-gray-500 text-center">
+                        No categories found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {selectedRelated.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedRelated.map((id) => {
+                  const category = relatedProductsList.find((c) => c.id === id);
+                  return category ? (
+                    <Badge
+                      key={id}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {category.name}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setselectedRelated((prev) =>
+                            prev.filter((cid) => cid !== id),
+                          )
+                        }
+                        className="ml-1 text-muted-foreground hover:text-foreground"
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ) : null;
+                })}
+              </div>
+            )}
           </div>
         </div>
         <div className="bg-white p-6 rounded-xl shadow space-y-4">
@@ -683,6 +788,54 @@ export default function EditProductPage() {
               </TabsContent>
             ))}
           </Tabs>
+        </div>
+        {/* 🔹 Product Status */}
+        <div className="bg-white p-6 rounded-xl shadow space-y-4">
+          <h3 className="text-lg font-semibold">Product Status</h3>
+
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="isFeatured"
+                checked={form.isFeatured}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    isFeatured: e.target.checked,
+                  }))
+                }
+                className="h-4 w-4 accent-blue-600 cursor-pointer"
+              />
+              <label
+                htmlFor="isFeatured"
+                className="text-sm font-medium cursor-pointer"
+              >
+                Mark as Featured Product
+              </label>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <input
+                type="checkbox"
+                id="isNew"
+                checked={form.isNew}
+                onChange={(e) =>
+                  setForm((prev) => ({
+                    ...prev,
+                    isNew: e.target.checked,
+                  }))
+                }
+                className="h-4 w-4 accent-green-600 cursor-pointer"
+              />
+              <label
+                htmlFor="isNew"
+                className="text-sm font-medium cursor-pointer"
+              >
+                Mark as New Product
+              </label>
+            </div>
+          </div>
         </div>
         {/* 🔹 Action Buttons */}
         <div className="flex gap-4 justify-end">
