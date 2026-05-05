@@ -210,7 +210,7 @@ export function ProductsPageClient() {
         />
 
         <div className="bg-white rounded-xl shadow overflow-x-auto">
-          <table className="w-full text-sm">
+          <table className="w-full text-sm table-fixed">
             <thead className="bg-gray-100 text-left">
               <tr>
                 <th className="p-3">Image</th>
@@ -246,7 +246,7 @@ export function ProductsPageClient() {
                     </span>
                   </button>
                 </th>
-                <th className="p-3">
+                <th className="p-3 w-32">
                   <button
                     type="button"
                     onClick={() => toggleSort("productCode")}
@@ -325,7 +325,12 @@ export function ProductsPageClient() {
                       <span className="text-gray-400 text-xs">No category</span>
                     )}
                   </td>
-                  <td className="p-3 ">{p.productCode}</td>
+                  <td
+                    className="p-3 w-32 max-w-[180px]   "
+                    title={p.productCode}
+                  >
+                    {p.productCode}
+                  </td>
                   <td className="p-3 ">
                     {p.createdAt
                       ? new Date(p.createdAt).toLocaleDateString(undefined, {

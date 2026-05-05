@@ -1,25 +1,32 @@
 import { db } from "@/src/db";
-import { products } from "@/src/db/schema";
-import { eq, and, ne } from "drizzle-orm";
+import { products, relatedProducts as relatedProductsTable } from "@/src/db/schema";
+import { eq } from "drizzle-orm";
 
 export async function GET(
   req: Request,
   ctx: RouteContext<'/api/products/[id]/related'>
 ) {
   const { id } = await ctx.params;
-  const categoryId = id;
-  // console.log("Fetching related products for ID:", categoryId); // ✅ debug  
+  const productId = id;
 
-try{
+  try {
     const related = await db
-      .select()
-      .from(products)
-      .where(
-        and(
-          eq(products.categoryId, categoryId),
-          ne(products.id, categoryId)
-        )
+      .select({
+        id: products.id,
+        name: products.name,
+        slug: products.slug,
+        bannerImageUrl: products.bannerImageUrl,
+        description: products.description,
+        sku: products.sku,
+        productCode: products.productCode,
+        categoryId: products.categoryId,
+      })
+      .from(relatedProductsTable)
+      .innerJoin(
+        products,
+        eq(relatedProductsTable.relatedProductId, products.id),
       )
+      .where(eq(relatedProductsTable.productId, productId))
       .limit(8);
     
     // console.log("Related products:", related); // ✅ debug

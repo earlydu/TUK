@@ -134,9 +134,7 @@ export async function POST(req: Request) {
       }
 
       // 🔗 Related Categories -> save valid related product IDs
-      const relatedCategories: string[] = body.relatedCategories || [];
       const relatedProducts: string[] = body.relatedProducts || [];
-
       const relatedRows: { productId: string; relatedProductId: string }[] = [];
 
       if (relatedProducts.length > 0) {
@@ -146,26 +144,6 @@ export async function POST(req: Request) {
             relatedProductId,
           })),
         );
-      }
-
-      if (relatedCategories.length > 0) {
-        for (const categoryId of relatedCategories) {
-          const categoryProducts = await tx
-            .select({ id: products.id })
-            .from(products)
-            .where(eq(products.categoryId, categoryId));
-
-          const validProduct = categoryProducts.find(
-            (productRow) => productRow.id !== productId,
-          );
-
-          if (validProduct) {
-            relatedRows.push({
-              productId,
-              relatedProductId: validProduct.id,
-            });
-          }
-        }
       }
 
       if (relatedRows.length > 0) {

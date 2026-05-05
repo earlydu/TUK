@@ -104,7 +104,7 @@ export default async function Page({ params }: ProductPageProps) {
 
             <ProductDetailsTabs product={product} />
             <RelatedProducts
-              categoryID={product.categoryId}
+              productId={product.id}
               currentProductId={product.id}
             />
           </div>

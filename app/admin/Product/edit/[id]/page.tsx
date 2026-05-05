@@ -120,7 +120,7 @@ export default function EditProductPage() {
         setPdf(data.pdfUrl || "");
         setSelectedDistributors(data.distributors?.map((d: any) => d.id) || []);
         setselectedRelated(
-          data.relatedCategories || data.relatedProducts || [],
+          data.relatedProducts || data.relatedCategories || [],
         );
 
         setLoading(false);
@@ -136,16 +136,18 @@ export default function EditProductPage() {
   // 📚 Fetch Categories and Products for selection
   useEffect(() => {
     const fetchData = async () => {
-      const [catRes, distRes] = await Promise.all([
+      const [catRes, distRes, prodRes] = await Promise.all([
         fetch("/api/category"),
         fetch("/api/distributors"),
+        fetch("/api/products"),
       ]);
 
       const catData = await catRes.json();
       const distData = await distRes.json();
+      const prodData = await prodRes.json();
 
       setCategoriesList(catData);
-      setRelatedProductsList(catData);
+      setRelatedProductsList(prodData);
       setDistributorsList(distData);
     };
 
@@ -284,7 +286,7 @@ export default function EditProductPage() {
           diTerms: diTerms.split("|").filter((t) => t?.trim()),
           bannerImageUrl,
           images: galleryImages,
-          relatedCategories: selectedRelated,
+          relatedProducts: selectedRelated,
           content,
           pdfUrl: pdf,
           distributors: selectedDistributors,
@@ -448,7 +450,7 @@ export default function EditProductPage() {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">
-            <h3 className="text-lg font-semibold">Related Categories</h3>
+            <h3 className="text-lg font-semibold">Related Products</h3>
 
             <div className="relative related-dropdown">
               <Button
@@ -457,8 +459,8 @@ export default function EditProductPage() {
                 className="w-full justify-between pl-3 pr-3"
               >
                 {selectedRelated.length > 0
-                  ? `${selectedRelated.length} category(s) selected`
-                  : "Select related categories..."}
+                  ? `${selectedRelated.length} product(s) selected`
+                  : "Select related products..."}
                 <IconChevronDown className="h-4 w-4 opacity-50" />
               </Button>
 
@@ -466,7 +468,7 @@ export default function EditProductPage() {
                 <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden">
                   <div className="p-2 border-b">
                     <Input
-                      placeholder="Search categories..."
+                      placeholder="Search products..."
                       value={relatedCategoriesSearch}
                       onChange={(e) =>
                         setRelatedCategoriesSearch(e.target.value)
@@ -476,24 +478,24 @@ export default function EditProductPage() {
                   </div>
                   <div className="max-h-64 overflow-y-auto">
                     {relatedProductsList
-                      .filter((category) =>
-                        category.name
-                          .toLowerCase()
-                          .includes(relatedCategoriesSearch.toLowerCase()),
+                      .filter(
+                        (product) =>
+                          product.id !== id &&
+                          product.name
+                            .toLowerCase()
+                            .includes(relatedCategoriesSearch.toLowerCase()),
                       )
-                      .map((category) => {
-                        const isSelected = selectedRelated.includes(
-                          category.id,
-                        );
+                      .map((product) => {
+                        const isSelected = selectedRelated.includes(product.id);
                         return (
                           <div
-                            key={category.id}
+                            key={product.id}
                             className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
                             onClick={() => {
                               setselectedRelated((prev) =>
                                 isSelected
-                                  ? prev.filter((id) => id !== category.id)
-                                  : [...prev, category.id],
+                                  ? prev.filter((id) => id !== product.id)
+                                  : [...prev, product.id],
                               );
                             }}
                           >
@@ -503,19 +505,21 @@ export default function EditProductPage() {
                             />
                             <div className="flex-1">
                               <p className="text-sm font-medium">
-                                {category.name}
+                                {product.name}
                               </p>
                             </div>
                           </div>
                         );
                       })}
-                    {relatedProductsList.filter((category) =>
-                      category.name
-                        .toLowerCase()
-                        .includes(relatedCategoriesSearch.toLowerCase()),
+                    {relatedProductsList.filter(
+                      (product) =>
+                        product.id !== id &&
+                        product.name
+                          .toLowerCase()
+                          .includes(relatedCategoriesSearch.toLowerCase()),
                     ).length === 0 && (
                       <div className="p-3 text-sm text-gray-500 text-center">
-                        No categories found
+                        No products found
                       </div>
                     )}
                   </div>

@@ -24,10 +24,10 @@ type Product = {
 };
 
 export default function RelatedProducts({
-  categoryID,
+  productId,
   currentProductId,
 }: {
-  categoryID: string;
+  productId: string;
   currentProductId: string;
 }) {
   const [related, setRelated] = useState<Product[]>([]);
@@ -37,7 +37,7 @@ export default function RelatedProducts({
   useEffect(() => {
     const fetchRelated = async () => {
       try {
-        const res = await fetch(`/api/products/${categoryID}/related`);
+        const res = await fetch(`/api/products/${productId}/related`);
         const data = await res.json();
 
         if (Array.isArray(data)) {
@@ -61,7 +61,7 @@ export default function RelatedProducts({
     // ✅ load wishlist
     const items = getWishlist();
     setWishlistIds(items.map((i: any) => i.id));
-  }, [categoryID]);
+  }, [productId]);
 
   // ✅ Toggle wishlist
   const handleWishlist = (product: any) => {
@@ -127,7 +127,7 @@ export default function RelatedProducts({
                 </div>
 
                 {/* Content */}
-                <div className="p-4 space-y-2 flex flex-col flex-grow">
+                <div className="p-4 space-y-2 flex flex-col grow">
                   {/* Name */}
                   <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
                     {item.name}

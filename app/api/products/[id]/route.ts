@@ -7,7 +7,7 @@ import {
   productDiTerms,
   relatedProducts as relatedProductsTable,
 } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
+import { eq, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { distributors, productDistributor } from "@/src/db/schema";
 
@@ -306,14 +306,20 @@ export async function DELETE(
       );
     }
 
-    // 🔥 Delete related data first
+    // 🔥 Delete all related data first
     await db.delete(productFeatures).where(eq(productFeatures.productId, id));
     await db.delete(productSpecifications).where(eq(productSpecifications.productId, id));
     await db.delete(productImages).where(eq(productImages.productId, id));
     await db.delete(productDiTerms).where(eq(productDiTerms.productId, id));
+    await db.delete(productDistributor).where(eq(productDistributor.productId, id));
     await db
-  .delete(productDistributor)
-  .where(eq(productDistributor.productId, id));
+      .delete(relatedProductsTable)
+      .where(
+        or(
+          eq(relatedProductsTable.productId, id),
+          eq(relatedProductsTable.relatedProductId, id),
+        ),
+      );
 
     // 🔥 Delete main product
     await db.delete(products).where(eq(products.id, id));
