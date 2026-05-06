@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import RichEditor from "@/components/common/RichEditor";
 import { toast } from "sonner";
@@ -64,6 +65,7 @@ export default function EditProductPage() {
   const [selectedRelated, setselectedRelated] = useState<string[]>([]);
   const [isRelatedDropdownOpen, setIsRelatedDropdownOpen] = useState(false);
   const [relatedCategoriesSearch, setRelatedCategoriesSearch] = useState("");
+  const [isProductsMode, setIsProductsMode] = useState(true);
 
   const [distributorsList, setDistributorsList] = useState<any[]>([]);
   const [selectedDistributors, setSelectedDistributors] = useState<string[]>(
@@ -119,6 +121,9 @@ export default function EditProductPage() {
         setContent(data.content || {});
         setPdf(data.pdfUrl || "");
         setSelectedDistributors(data.distributors?.map((d: any) => d.id) || []);
+        const hasRelatedProducts = data.relatedProducts && data.relatedProducts.length > 0;
+        const hasRelatedCategories = data.relatedCategories && data.relatedCategories.length > 0;
+        setIsProductsMode(hasRelatedProducts || !hasRelatedCategories);
         setselectedRelated(
           data.relatedProducts || data.relatedCategories || [],
         );
@@ -286,7 +291,8 @@ export default function EditProductPage() {
           diTerms: diTerms.split("|").filter((t) => t?.trim()),
           bannerImageUrl,
           images: galleryImages,
-          relatedProducts: selectedRelated,
+          relatedProducts: isProductsMode ? selectedRelated : [],
+        relatedCategories: !isProductsMode ? selectedRelated : [],
           content,
           pdfUrl: pdf,
           distributors: selectedDistributors,
@@ -450,7 +456,19 @@ export default function EditProductPage() {
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">
-            <h3 className="text-lg font-semibold">Related Products</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">
+                Related {isProductsMode ? "Products" : "Categories"}
+              </h3>
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Categories</span>
+                <Switch
+                  checked={isProductsMode}
+                  onCheckedChange={setIsProductsMode}
+                />
+                <span className="text-sm text-muted-foreground">Products</span>
+              </div>
+            </div>
 
             <div className="relative related-dropdown">
               <Button
@@ -459,8 +477,8 @@ export default function EditProductPage() {
                 className="w-full justify-between pl-3 pr-3"
               >
                 {selectedRelated.length > 0
-                  ? `${selectedRelated.length} product(s) selected`
-                  : "Select related products..."}
+                  ? `${selectedRelated.length} ${isProductsMode ? "product" : "categor"}${selectedRelated.length === 1 ? "y" : "ies"} selected`
+                  : `Select related ${isProductsMode ? "products" : "categories"}...`}
                 <IconChevronDown className="h-4 w-4 opacity-50" />
               </Button>
 
@@ -468,7 +486,7 @@ export default function EditProductPage() {
                 <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden">
                   <div className="p-2 border-b">
                     <Input
-                      placeholder="Search products..."
+                      placeholder={`Search ${isProductsMode ? "products" : "categories"}...`}
                       value={relatedCategoriesSearch}
                       onChange={(e) =>
                         setRelatedCategoriesSearch(e.target.value)
@@ -477,25 +495,27 @@ export default function EditProductPage() {
                     />
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {relatedProductsList
+                    {(isProductsMode && categoryId ?
+                      relatedProductsList.filter(p => p.categoryId === categoryId).slice(0, 6)
+                      : (isProductsMode ? relatedProductsList : categoriesList))
                       .filter(
-                        (product) =>
-                          product.id !== id &&
-                          product.name
+                        (item) =>
+                          item.id !== id &&
+                          item.name
                             .toLowerCase()
                             .includes(relatedCategoriesSearch.toLowerCase()),
                       )
-                      .map((product) => {
-                        const isSelected = selectedRelated.includes(product.id);
+                      .map((item) => {
+                        const isSelected = selectedRelated.includes(item.id);
                         return (
                           <div
-                            key={product.id}
+                            key={item.id}
                             className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
                             onClick={() => {
                               setselectedRelated((prev) =>
                                 isSelected
-                                  ? prev.filter((id) => id !== product.id)
-                                  : [...prev, product.id],
+                                  ? prev.filter((id) => id !== item.id)
+                                  : [...prev, item.id],
                               );
                             }}
                           >
@@ -505,21 +525,25 @@ export default function EditProductPage() {
                             />
                             <div className="flex-1">
                               <p className="text-sm font-medium">
-                                {product.name}
+                                {item.name}
                               </p>
                             </div>
                           </div>
                         );
                       })}
-                    {relatedProductsList.filter(
-                      (product) =>
-                        product.id !== id &&
-                        product.name
+                    {(isProductsMode && categoryId ?
+                      relatedProductsList.filter(p => p.categoryId === categoryId).slice(0, 6)
+                      : (isProductsMode ? relatedProductsList : categoriesList)).filter(
+                      (item) =>
+                        item.id !== id &&
+                        item.name
                           .toLowerCase()
                           .includes(relatedCategoriesSearch.toLowerCase()),
                     ).length === 0 && (
                       <div className="p-3 text-sm text-gray-500 text-center">
-                        No products found
+                        {isProductsMode && !categoryId 
+                          ? "Select a category first"
+                          : `No ${isProductsMode ? "products" : "categories"} found`}
                       </div>
                     )}
                   </div>
@@ -530,14 +554,14 @@ export default function EditProductPage() {
             {selectedRelated.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {selectedRelated.map((id) => {
-                  const category = relatedProductsList.find((c) => c.id === id);
-                  return category ? (
+                  const item = (isProductsMode ? relatedProductsList : categoriesList).find((c) => c.id === id);
+                  return item ? (
                     <Badge
                       key={id}
                       variant="secondary"
                       className="flex items-center gap-1"
                     >
-                      {category.name}
+                      {item.name}
                       <button
                         type="button"
                         onClick={() =>
