@@ -12,6 +12,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -209,99 +217,23 @@ export function ProductsPageClient() {
           className=" w-full border lg:hidden block border-gray-300 mb-4 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
 
-        <div className="bg-white rounded-xl shadow overflow-x-auto">
-          <table className="w-full text-sm table-fixed">
-            <thead className="bg-gray-100 text-left">
-              <tr>
-                <th className="p-3">Image</th>
-                <th className="p-3">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("name")}
-                    className="inline-flex items-center gap-1 font-semibold text-left"
-                  >
-                    Name
-                    <span className="text-xs text-gray-500">
-                      {sortColumn === "name"
-                        ? sortDirection === "asc"
-                          ? "▲"
-                          : "▼"
-                        : "↕"}
-                    </span>
-                  </button>
-                </th>
-                <th className="p-3">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("category")}
-                    className="inline-flex items-center gap-1 font-semibold text-left"
-                  >
-                    Category
-                    <span className="text-xs text-gray-500">
-                      {sortColumn === "category"
-                        ? sortDirection === "asc"
-                          ? "▲"
-                          : "▼"
-                        : "↕"}
-                    </span>
-                  </button>
-                </th>
-                <th className="p-3 w-32">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("productCode")}
-                    className="inline-flex items-center gap-1 font-semibold text-left"
-                  >
-                    Product Code
-                    <span className="text-xs text-gray-500">
-                      {sortColumn === "productCode"
-                        ? sortDirection === "asc"
-                          ? "▲"
-                          : "▼"
-                        : "↕"}
-                    </span>
-                  </button>
-                </th>
-                <th className="p-3">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("createdAt")}
-                    className="inline-flex items-center gap-1 font-semibold text-left"
-                  >
-                    Date Added
-                    <span className="text-xs text-gray-500">
-                      {sortColumn === "createdAt"
-                        ? sortDirection === "asc"
-                          ? "▲"
-                          : "▼"
-                        : "↕"}
-                    </span>
-                  </button>
-                </th>
-                <th className="p-3">
-                  <button
-                    type="button"
-                    onClick={() => toggleSort("isActive")}
-                    className="inline-flex items-center gap-1 font-semibold text-left"
-                  >
-                    Status
-                    <span className="text-xs text-gray-500">
-                      {sortColumn === "isActive"
-                        ? sortDirection === "asc"
-                          ? "▲"
-                          : "▼"
-                        : "↕"}
-                    </span>
-                  </button>
-                </th>
-                <th className="p-3">Actions</th>
-              </tr>
-            </thead>
-
-            <tbody className="items-center">
+        <div className="bg-white rounded-xl shadow mt-6">
+          <Table className="min-w-full">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-20">Image</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Category</TableHead>
+                <TableHead className="w-40">Product Code</TableHead>
+                <TableHead className="w-40">Date Added</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="text-right w-24">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
               {sortedProducts.map((p) => (
-                <tr key={p.id} className="border-t ">
-                  <td className="p-3">
+                <TableRow key={p.id}>
+                  <TableCell className="p-3 align-middle">
                     {p.bannerImageUrl ? (
                       <img
                         src={p.bannerImageUrl}
@@ -309,14 +241,15 @@ export function ProductsPageClient() {
                         className="w-16 h-16 object-cover rounded"
                       />
                     ) : (
-                      <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-500">
+                      <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs">
                         No Image
                       </div>
                     )}
-                  </td>
-
-                  <td className="p-3 font-medium">{p.name}</td>
-                  <td className="p-3">
+                  </TableCell>
+                  <TableCell className="p-3 font-medium align-middle">
+                    {p.name}
+                  </TableCell>
+                  <TableCell className="p-3 align-middle">
                     {p.category ? (
                       <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
                         {p.category}
@@ -324,14 +257,14 @@ export function ProductsPageClient() {
                     ) : (
                       <span className="text-gray-400 text-xs">No category</span>
                     )}
-                  </td>
-                  <td
-                    className="p-3 w-32 max-w-[180px]   "
+                  </TableCell>
+                  <TableCell
+                    className="p-3 align-middle max-w-xs truncate"
                     title={p.productCode}
                   >
                     {p.productCode}
-                  </td>
-                  <td className="p-3 ">
+                  </TableCell>
+                  <TableCell className="p-3 align-middle">
                     {p.createdAt
                       ? new Date(p.createdAt).toLocaleDateString(undefined, {
                           year: "numeric",
@@ -339,29 +272,28 @@ export function ProductsPageClient() {
                           day: "numeric",
                         })
                       : "-"}
-                  </td>
-                  <td className="p-3">
+                  </TableCell>
+                  <TableCell className="p-3 align-middle">
                     <span
                       className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${p.isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
                     >
                       {p.isActive ? "Published" : "Unpublished"}
                     </span>
-                  </td>
-
-                  <td className="p-3 flex flex-wrap gap-2 mt-4">
+                  </TableCell>
+                  <TableCell className="p-3 text-right align-middle space-x-2">
                     <Button
+                      size="sm"
+                      className="rounded"
                       onClick={() => router.push(`/admin/Product/edit/${p.id}`)}
-                      className="cursor-pointer rounded"
                     >
                       Edit
                     </Button>
-
                     <Button
                       variant="outline"
                       size="sm"
                       disabled={publishingId === p.id}
                       onClick={() => togglePublishStatus(p.id, !p.isActive)}
-                      className="gap-1.5 cursor-pointer"
+                      className="gap-1.5"
                     >
                       {publishingId === p.id ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -371,13 +303,12 @@ export function ProductsPageClient() {
                         "Publish"
                       )}
                     </Button>
-
                     <Button
                       variant="outline"
                       size="sm"
                       disabled={duplicatingId === p.id}
                       onClick={() => handleDuplicate(p.id)}
-                      className="gap-1.5 cursor-pointer"
+                      className="gap-1.5"
                     >
                       {duplicatingId === p.id ? (
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -386,43 +317,39 @@ export function ProductsPageClient() {
                       )}
                       Duplicate
                     </Button>
-
                     <AlertDialog>
                       <AlertDialogTrigger>
                         <Button
                           variant="destructive"
-                          className="px-3 py-1 cursor-pointer text-sm font-medium  rounded "
+                          size="sm"
+                          className="rounded"
                         >
                           Delete
                         </Button>
                       </AlertDialogTrigger>
-
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>
                             Are you absolutely sure?
                           </AlertDialogTitle>
-
                           <AlertDialogDescription>
                             This action cannot be undone. This will permanently
                             delete the category.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
-
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
-
                           <AlertDialogAction onClick={() => handleDelete(p.id)}>
                             Yes, Delete
                           </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
       </div>
     </div>
