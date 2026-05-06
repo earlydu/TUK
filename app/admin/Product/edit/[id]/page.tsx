@@ -121,8 +121,10 @@ export default function EditProductPage() {
         setContent(data.content || {});
         setPdf(data.pdfUrl || "");
         setSelectedDistributors(data.distributors?.map((d: any) => d.id) || []);
-        const hasRelatedProducts = data.relatedProducts && data.relatedProducts.length > 0;
-        const hasRelatedCategories = data.relatedCategories && data.relatedCategories.length > 0;
+        const hasRelatedProducts =
+          data.relatedProducts && data.relatedProducts.length > 0;
+        const hasRelatedCategories =
+          data.relatedCategories && data.relatedCategories.length > 0;
         setIsProductsMode(hasRelatedProducts || !hasRelatedCategories);
         setselectedRelated(
           data.relatedProducts || data.relatedCategories || [],
@@ -258,6 +260,13 @@ export default function EditProductPage() {
     setGalleryLoading(false);
   };
 
+  const handleModeChange = (checked: boolean) => {
+    setIsProductsMode(checked);
+    setselectedRelated([]);
+    setRelatedCategoriesSearch("");
+    setIsRelatedDropdownOpen(false);
+  };
+
   // 🔥 UPDATE API CALL
   const handleUpdate = async () => {
     if (!form.name || !form.slug || !categoryId) {
@@ -292,7 +301,7 @@ export default function EditProductPage() {
           bannerImageUrl,
           images: galleryImages,
           relatedProducts: isProductsMode ? selectedRelated : [],
-        relatedCategories: !isProductsMode ? selectedRelated : [],
+          relatedCategories: !isProductsMode ? selectedRelated : [],
           content,
           pdfUrl: pdf,
           distributors: selectedDistributors,
@@ -431,7 +440,12 @@ export default function EditProductPage() {
 
             <Select
               value={categoryId}
-              onValueChange={(val) => setCategoryId(val || "")}
+              onValueChange={(val) => {
+                setCategoryId(val || "");
+                if (isProductsMode) {
+                  setselectedRelated([]);
+                }
+              }}
             >
               <SelectTrigger>
                 <SelectValue
@@ -461,10 +475,12 @@ export default function EditProductPage() {
                 Related {isProductsMode ? "Products" : "Categories"}
               </h3>
               <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Categories</span>
+                <span className="text-sm text-muted-foreground">
+                  Categories
+                </span>
                 <Switch
                   checked={isProductsMode}
-                  onCheckedChange={setIsProductsMode}
+                  onCheckedChange={handleModeChange}
                 />
                 <span className="text-sm text-muted-foreground">Products</span>
               </div>
@@ -495,9 +511,14 @@ export default function EditProductPage() {
                     />
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {(isProductsMode && categoryId ?
-                      relatedProductsList.filter(p => p.categoryId === categoryId).slice(0, 6)
-                      : (isProductsMode ? relatedProductsList : categoriesList))
+                    {(isProductsMode && categoryId
+                      ? relatedProductsList
+                          .filter((p) => p.categoryId === categoryId)
+                          .slice(0, 6)
+                      : isProductsMode
+                        ? relatedProductsList
+                        : categoriesList
+                    )
                       .filter(
                         (item) =>
                           item.id !== id &&
@@ -524,16 +545,19 @@ export default function EditProductPage() {
                               className="pointer-events-none"
                             />
                             <div className="flex-1">
-                              <p className="text-sm font-medium">
-                                {item.name}
-                              </p>
+                              <p className="text-sm font-medium">{item.name}</p>
                             </div>
                           </div>
                         );
                       })}
-                    {(isProductsMode && categoryId ?
-                      relatedProductsList.filter(p => p.categoryId === categoryId).slice(0, 6)
-                      : (isProductsMode ? relatedProductsList : categoriesList)).filter(
+                    {(isProductsMode && categoryId
+                      ? relatedProductsList
+                          .filter((p) => p.categoryId === categoryId)
+                          .slice(0, 6)
+                      : isProductsMode
+                        ? relatedProductsList
+                        : categoriesList
+                    ).filter(
                       (item) =>
                         item.id !== id &&
                         item.name
@@ -541,7 +565,7 @@ export default function EditProductPage() {
                           .includes(relatedCategoriesSearch.toLowerCase()),
                     ).length === 0 && (
                       <div className="p-3 text-sm text-gray-500 text-center">
-                        {isProductsMode && !categoryId 
+                        {isProductsMode && !categoryId
                           ? "Select a category first"
                           : `No ${isProductsMode ? "products" : "categories"} found`}
                       </div>
@@ -554,7 +578,9 @@ export default function EditProductPage() {
             {selectedRelated.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {selectedRelated.map((id) => {
-                  const item = (isProductsMode ? relatedProductsList : categoriesList).find((c) => c.id === id);
+                  const item = (
+                    isProductsMode ? relatedProductsList : categoriesList
+                  ).find((c) => c.id === id);
                   return item ? (
                     <Badge
                       key={id}

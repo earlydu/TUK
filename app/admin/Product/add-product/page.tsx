@@ -174,6 +174,14 @@ export default function AddProductPage() {
 
     setGalleryLoading(false);
   };
+
+  const handleModeChange = (checked: boolean) => {
+    setIsProductsMode(checked);
+    setselectedRelated([]);
+    setRelatedCategoriesSearch("");
+    setIsRelatedDropdownOpen(false);
+  };
+
   // useEffect(() => {
   //   const fetchCategories = async () => {
   //     const res = await fetch("/api/category");
@@ -210,6 +218,11 @@ export default function AddProductPage() {
   }, []);
   // 🧠 Handle Submit
   const handleSubmit = async () => {
+    if (!form.name || !form.slug || !categoryId) {
+      toast.error("Name, slug and category are required ❌");
+      return;
+    }
+
     const toastId = toast.loading("Creating product...");
 
     try {
@@ -342,7 +355,14 @@ export default function AddProductPage() {
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">
             <h3 className="text-lg font-semibold">Category</h3>
 
-            <Select onValueChange={(value) => setCategoryId(value as string)}>
+            <Select
+              onValueChange={(value) => {
+                setCategoryId(value as string);
+                if (isProductsMode) {
+                  setselectedRelated([]);
+                }
+              }}
+            >
               <SelectTrigger>
                 <SelectValue
                   children={() => {
@@ -376,7 +396,7 @@ export default function AddProductPage() {
                 <Switch
                   id="mode-toggle"
                   checked={isProductsMode}
-                  onCheckedChange={setIsProductsMode}
+                  onCheckedChange={handleModeChange}
                 />
                 <label htmlFor="mode-toggle" className="text-sm">
                   Products
@@ -409,9 +429,14 @@ export default function AddProductPage() {
                     />
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {(isProductsMode && categoryId ? 
-                      productsList.filter(p => p.categoryId === categoryId).slice(0, 6)
-                      : (isProductsMode ? productsList : categoriesList))
+                    {(isProductsMode && categoryId
+                      ? productsList
+                          .filter((p) => p.categoryId === categoryId)
+                          .slice(0, 6)
+                      : isProductsMode
+                        ? productsList
+                        : categoriesList
+                    )
                       .filter((item) =>
                         item.name
                           .toLowerCase()
@@ -436,22 +461,25 @@ export default function AddProductPage() {
                               className="pointer-events-none"
                             />
                             <div className="flex-1">
-                              <p className="text-sm font-medium">
-                                {item.name}
-                              </p>
+                              <p className="text-sm font-medium">{item.name}</p>
                             </div>
                           </div>
                         );
                       })}
-                    {(isProductsMode && categoryId ? 
-                      productsList.filter(p => p.categoryId === categoryId).slice(0, 6)
-                      : (isProductsMode ? productsList : categoriesList)).filter((item) =>
+                    {(isProductsMode && categoryId
+                      ? productsList
+                          .filter((p) => p.categoryId === categoryId)
+                          .slice(0, 6)
+                      : isProductsMode
+                        ? productsList
+                        : categoriesList
+                    ).filter((item) =>
                       item.name
                         .toLowerCase()
                         .includes(relatedCategoriesSearch.toLowerCase()),
                     ).length === 0 && (
                       <div className="p-3 text-sm text-gray-500 text-center">
-                        {isProductsMode && !categoryId 
+                        {isProductsMode && !categoryId
                           ? "Select a category first"
                           : `No ${isProductsMode ? "products" : "categories"} found`}
                       </div>
@@ -464,7 +492,9 @@ export default function AddProductPage() {
             {selectedRelated.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-2">
                 {selectedRelated.map((id) => {
-                  const item = (isProductsMode ? productsList : categoriesList).find((c) => c.id === id);
+                  const item = (
+                    isProductsMode ? productsList : categoriesList
+                  ).find((c) => c.id === id);
                   return item ? (
                     <Badge
                       key={id}

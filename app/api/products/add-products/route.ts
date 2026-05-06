@@ -34,6 +34,7 @@ export async function POST(req: Request) {
       isNew = false,
       pdfUrl,
       relatedProducts = [],
+      relatedCategories = [],
     } = body;
 
     // ✅ Validation
@@ -133,11 +134,29 @@ export async function POST(req: Request) {
         );
       }
 
-      // 🔗 Related Categories -> save valid related product IDs
+      // 🔗 Related Categories or Related Products -> save valid related product IDs
       const relatedProducts: string[] = body.relatedProducts || [];
+      const relatedCategories: string[] = body.relatedCategories || [];
       const relatedRows: { productId: string; relatedProductId: string }[] = [];
 
-      if (relatedProducts.length > 0) {
+      if (relatedCategories.length > 0) {
+        for (const categoryId of relatedCategories) {
+          const categoryProducts = await tx
+            .select({ id: products.id })
+            .from(products)
+            .where(eq(products.categoryId, categoryId));
+
+          categoryProducts
+            .filter((productRow) => productRow.id !== productId)
+            .slice(0, 6)
+            .forEach((productRow) => {
+              relatedRows.push({
+                productId,
+                relatedProductId: productRow.id,
+              });
+            });
+        }
+      } else if (relatedProducts.length > 0) {
         relatedRows.push(
           ...relatedProducts.map((relatedProductId: string) => ({
             productId,

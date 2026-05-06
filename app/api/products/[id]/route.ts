@@ -230,54 +230,56 @@ export async function PUT(
       }
     }
 
-    if (body.relatedCategories !== undefined) {
+    if (
+      body.relatedProducts !== undefined ||
+      body.relatedCategories !== undefined
+    ) {
       await db
         .delete(relatedProductsTable)
         .where(eq(relatedProductsTable.productId, id));
 
-      if (body.relatedCategories?.length > 0) {
-        const relatedRows: { productId: string; relatedProductId: string }[] = [];
+      const relatedRows: { productId: string; relatedProductId: string }[] = [];
 
+      if (
+        body.relatedProducts !== undefined &&
+        body.relatedProducts.length > 0
+      ) {
+        relatedRows.push(
+          ...body.relatedProducts.map((relatedProductId: string) => ({
+            productId: id,
+            relatedProductId,
+          })),
+        );
+      } else if (
+        body.relatedCategories !== undefined &&
+        body.relatedCategories.length > 0
+      ) {
         for (const categoryId of body.relatedCategories) {
           const categoryProducts = await db
             .select({ id: products.id })
             .from(products)
             .where(eq(products.categoryId, categoryId));
 
-          const validProduct = categoryProducts.find(
-            (productRow) => productRow.id !== id,
-          );
-
-          if (validProduct) {
-            relatedRows.push({
-              productId: id,
-              relatedProductId: validProduct.id,
+          categoryProducts
+            .filter((productRow) => productRow.id !== id)
+            .slice(0, 6)
+            .forEach((productRow) => {
+              relatedRows.push({
+                productId: id,
+                relatedProductId: productRow.id,
+              });
             });
-          }
-        }
-
-        if (relatedRows.length > 0) {
-          const uniqueRows = Array.from(
-            new Map(
-              relatedRows.map((row) => [row.relatedProductId, row]),
-            ).values(),
-          );
-
-          await db.insert(relatedProductsTable).values(uniqueRows);
         }
       }
-    } else if (body.relatedProducts !== undefined) {
-      await db
-        .delete(relatedProductsTable)
-        .where(eq(relatedProductsTable.productId, id));
 
-      if (body.relatedProducts?.length > 0) {
-        await db.insert(relatedProductsTable).values(
-          body.relatedProducts.map((relatedProductId: string) => ({
-            productId: id,
-            relatedProductId,
-          })),
+      if (relatedRows.length > 0) {
+        const uniqueRows = Array.from(
+          new Map(
+            relatedRows.map((row) => [row.relatedProductId, row]),
+          ).values(),
         );
+
+        await db.insert(relatedProductsTable).values(uniqueRows);
       }
     }
 
