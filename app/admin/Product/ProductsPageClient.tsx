@@ -20,6 +20,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+import { MoreVertical } from "lucide-react";
 import { Copy, Loader2 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
@@ -221,10 +230,10 @@ export function ProductsPageClient() {
           <Table className="min-w-full">
             <TableHeader>
               <TableRow>
-                <TableHead className="w-20">Image</TableHead>
-                <TableHead>Name</TableHead>
+                <TableHead className="w-44 max-w-44">Image</TableHead>
+                <TableHead className=" w-44 max-w-44">Name</TableHead>
                 <TableHead>Category</TableHead>
-                <TableHead className="w-40">Product Code</TableHead>
+                <TableHead className=" w-44 max-w-44">Product Code</TableHead>
                 <TableHead className="w-40">Date Added</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right w-24">Actions</TableHead>
@@ -238,7 +247,7 @@ export function ProductsPageClient() {
                       <img
                         src={p.bannerImageUrl}
                         alt={p.name}
-                        className="w-16 h-16 object-cover rounded"
+                        className="max-w-20 h-16 object-contain "
                       />
                     ) : (
                       <div className="w-16 h-16 bg-gray-200 rounded flex items-center justify-center text-gray-500 text-xs">
@@ -246,8 +255,10 @@ export function ProductsPageClient() {
                       </div>
                     )}
                   </TableCell>
-                  <TableCell className="p-3 font-medium align-middle">
-                    {p.name}
+                  <TableCell className="p-3 w-[280px] max-w-[280px] font-medium align-middle whitespace-normal break-words">
+                    <p className="whitespace-normal break-words leading-snug">
+                      {p.name}
+                    </p>
                   </TableCell>
                   <TableCell className="p-3 align-middle">
                     {p.category ? (
@@ -258,11 +269,10 @@ export function ProductsPageClient() {
                       <span className="text-gray-400 text-xs">No category</span>
                     )}
                   </TableCell>
-                  <TableCell
-                    className="p-3 align-middle max-w-xs truncate"
-                    title={p.productCode}
-                  >
-                    {p.productCode}
+                  <TableCell className="p-3 w-[200px] max-w-[200px]  align-middle whitespace-normal break-words">
+                    <p className="whitespace-normal break-words leading-snug">
+                      {p.productCode}
+                    </p>
                   </TableCell>
                   <TableCell className="p-3 align-middle">
                     {p.createdAt
@@ -280,7 +290,7 @@ export function ProductsPageClient() {
                       {p.isActive ? "Published" : "Unpublished"}
                     </span>
                   </TableCell>
-                  <TableCell className="p-3 text-right align-middle space-x-2">
+                  {/* <TableCell className="p-3 text-right align-middle space-x-2">
                     <Button
                       size="sm"
                       className="rounded"
@@ -345,6 +355,90 @@ export function ProductsPageClient() {
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
+                  </TableCell> */}
+                  <TableCell className="p-3 text-right align-middle">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Button variant="ghost" size="icon">
+                          <MoreVertical className="h-5 w-5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent
+                        align="end"
+                        className="w-44 font-barlow"
+                      >
+                        {/* EDIT */}
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router.push(`/admin/Product/edit/${p.id}`)
+                          }
+                        >
+                          Edit
+                        </DropdownMenuItem>
+
+                        {/* PUBLISH / UNPUBLISH */}
+                        <DropdownMenuItem
+                          disabled={publishingId === p.id}
+                          onClick={() => togglePublishStatus(p.id, !p.isActive)}
+                          className="flex items-center gap-2"
+                        >
+                          {publishingId === p.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : null}
+
+                          {p.isActive ? "Unpublish" : "Publish"}
+                        </DropdownMenuItem>
+
+                        {/* DUPLICATE */}
+                        <DropdownMenuItem
+                          disabled={duplicatingId === p.id}
+                          onClick={() => handleDuplicate(p.id)}
+                          className="flex items-center gap-2"
+                        >
+                          {duplicatingId === p.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                          Duplicate
+                        </DropdownMenuItem>
+
+                        <DropdownMenuSeparator />
+
+                        {/* DELETE */}
+                        <AlertDialog>
+                          <AlertDialogTrigger>
+                            <Button
+                              variant="destructive"
+                              size="sm"
+                              className="rounded"
+                            >
+                              Delete
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Are you absolutely sure?
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                This action cannot be undone. This will
+                                permanently delete the category.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancel</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() => handleDelete(p.id)}
+                              >
+                                Yes, Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))}
