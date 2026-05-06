@@ -429,14 +429,7 @@ export default function AddProductPage() {
                     />
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {(isProductsMode && categoryId
-                      ? productsList
-                          .filter((p) => p.categoryId === categoryId)
-                          .slice(0, 6)
-                      : isProductsMode
-                        ? productsList
-                        : categoriesList
-                    )
+                    {(isProductsMode ? productsList : categoriesList)
                       .filter((item) =>
                         item.name
                           .toLowerCase()
@@ -460,28 +453,31 @@ export default function AddProductPage() {
                               checked={isSelected}
                               className="pointer-events-none"
                             />
+                            <div className="flex-shrink-0">
+                              <img
+                                src={
+                                  item.bannerImageUrl ||
+                                  item.image ||
+                                  "/image/no-image.png"
+                                }
+                                alt={item.name}
+                                className="h-10 w-10 rounded-lg object-cover"
+                              />
+                            </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium">{item.name}</p>
                             </div>
                           </div>
                         );
                       })}
-                    {(isProductsMode && categoryId
-                      ? productsList
-                          .filter((p) => p.categoryId === categoryId)
-                          .slice(0, 6)
-                      : isProductsMode
-                        ? productsList
-                        : categoriesList
-                    ).filter((item) =>
-                      item.name
-                        .toLowerCase()
-                        .includes(relatedCategoriesSearch.toLowerCase()),
+                    {(isProductsMode ? productsList : categoriesList).filter(
+                      (item) =>
+                        item.name
+                          .toLowerCase()
+                          .includes(relatedCategoriesSearch.toLowerCase()),
                     ).length === 0 && (
                       <div className="p-3 text-sm text-gray-500 text-center">
-                        {isProductsMode && !categoryId
-                          ? "Select a category first"
-                          : `No ${isProductsMode ? "products" : "categories"} found`}
+                        {`No ${isProductsMode ? "products" : "categories"} found`}
                       </div>
                     )}
                   </div>

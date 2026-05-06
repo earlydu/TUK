@@ -511,14 +511,7 @@ export default function EditProductPage() {
                     />
                   </div>
                   <div className="max-h-64 overflow-y-auto">
-                    {(isProductsMode && categoryId
-                      ? relatedProductsList
-                          .filter((p) => p.categoryId === categoryId)
-                          .slice(0, 6)
-                      : isProductsMode
-                        ? relatedProductsList
-                        : categoriesList
-                    )
+                    {(isProductsMode ? relatedProductsList : categoriesList)
                       .filter(
                         (item) =>
                           item.id !== id &&
@@ -544,19 +537,26 @@ export default function EditProductPage() {
                               checked={isSelected}
                               className="pointer-events-none"
                             />
+                            <div className="flex-shrink-0">
+                              <img
+                                src={
+                                  item.bannerImageUrl ||
+                                  item.image ||
+                                  "/image/no-image.png"
+                                }
+                                alt={item.name}
+                                className="h-10 w-10 rounded-lg object-cover"
+                              />
+                            </div>
                             <div className="flex-1">
                               <p className="text-sm font-medium">{item.name}</p>
                             </div>
                           </div>
                         );
                       })}
-                    {(isProductsMode && categoryId
+                    {(isProductsMode
                       ? relatedProductsList
-                          .filter((p) => p.categoryId === categoryId)
-                          .slice(0, 6)
-                      : isProductsMode
-                        ? relatedProductsList
-                        : categoriesList
+                      : categoriesList
                     ).filter(
                       (item) =>
                         item.id !== id &&
@@ -565,9 +565,7 @@ export default function EditProductPage() {
                           .includes(relatedCategoriesSearch.toLowerCase()),
                     ).length === 0 && (
                       <div className="p-3 text-sm text-gray-500 text-center">
-                        {isProductsMode && !categoryId
-                          ? "Select a category first"
-                          : `No ${isProductsMode ? "products" : "categories"} found`}
+                        {`No ${isProductsMode ? "products" : "categories"} found`}
                       </div>
                     )}
                   </div>
