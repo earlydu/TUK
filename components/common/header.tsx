@@ -64,7 +64,7 @@ export default function Header() {
     <header className="relative w-full border-b bg-white font-barlow ">
       <div className="container mx-auto flex items-center justify-between py-2 px-4 lg:px-6 xl:px-8">
         {/* Logo */}
-        <Link href="/" className="flex items-center">
+        <Link href="/" className="flex ">
           <Image src="/logo.png" alt="logo" width={200} height={64} />
         </Link>
 

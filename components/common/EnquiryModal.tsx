@@ -17,8 +17,13 @@ import {
   validateRequired,
 } from "@/src/lib/validation";
 
+type WishlistProduct = {
+  name: string;
+  quantity: number;
+};
+
 type EnquiryModalProps = {
-  products?: string[];
+  products?: WishlistProduct[];
   buttonLabel?: string;
   dialogTitle?: string;
   buttonClassName?: string;
@@ -32,6 +37,10 @@ export default function EnquiryModal({
 }: EnquiryModalProps) {
   const isCompanyMandatory = true;
 
+  const productSummary = products
+    .map((item) => `${item.name} × ${item.quantity}`)
+    .join(", ");
+
   // Robot checkbox ke liye state
   const [isRobotChecked, setIsRobotChecked] = useState(false);
 
@@ -40,14 +49,14 @@ export default function EnquiryModal({
     company: "",
     email: "",
     phone: "",
-    product: products.length ? products.join(", ") : "",
+    product: products.length ? productSummary : "",
     spend: "",
     message: "",
   });
 
   useEffect(() => {
-    if (products.length && !form.product) {
-      setForm((prev) => ({ ...prev, product: products.join(", ") }));
+    if (products.length) {
+      setForm((prev) => ({ ...prev, product: productSummary }));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [products]);
@@ -129,7 +138,7 @@ export default function EnquiryModal({
           company: "",
           email: "",
           phone: "",
-          product: products.length ? products.join(", ") : "",
+          product: products.length ? productSummary : "",
           spend: "",
           message: "",
         });
@@ -215,18 +224,11 @@ export default function EnquiryModal({
               <p className="font-medium mb-2">Wishlist Products:</p>
               <ul className="list-decimal list-inside space-y-1">
                 {products.map((item, index) => (
-                  <li key={index}>{item}</li>
+                  <li key={index}>{`${item.name} × ${item.quantity}`}</li>
                 ))}
               </ul>
             </div>
           ) : null}
-
-          {/* <Input
-            name="spend"
-            value={form.spend}
-            onChange={handleChange}
-            placeholder="Typical Annual Spend on TUK"
-          /> */}
 
           <Textarea
             name="message"
