@@ -110,11 +110,19 @@ const Page = () => {
     <>
       <Header />
       <div
-        className="h-72 w-full text-white flex flex-col items-center justify-center font-poppins px-4 text-center"
+        className="relative h-72 w-full text-white flex flex-col items-center justify-center font-poppins px-4 text-center"
         style={{
           background: "linear-gradient(to right, #141D3D, #364FA3)",
         }}
       >
+        <Image
+          alt="Hero Background"
+          src="/graph1.jpeg"
+          className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+          width={1920}
+          height={100}
+
+        />
         <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
           My Wishlist
         </h1>
@@ -197,11 +205,10 @@ const Page = () => {
                               {item.name || item.title}
                             </h3>
                             <p
-                              className={`text-sm ${
-                                item.stock === "In Stock"
+                              className={`text-sm ${item.stock === "In Stock"
                                   ? "text-[#0300A7]"
                                   : "text-[#F59E0B]"
-                              }`}
+                                }`}
                             >
                               {item.stock}
                             </p>
@@ -216,11 +223,10 @@ const Page = () => {
                               type="button"
                               disabled={quantity <= 1}
                               onClick={() => decreaseQuantity(item.id)}
-                              className={`w-9 h-9 rounded-full text-lg font-semibold transition ${
-                                quantity <= 1
+                              className={`w-9 h-9 rounded-full text-lg font-semibold transition ${quantity <= 1
                                   ? "text-gray-300 bg-gray-100 cursor-not-allowed"
                                   : "text-[#0300A7] bg-white hover:bg-[#EBF0FF]"
-                              }`}
+                                }`}
                             >
                               −
                             </button>

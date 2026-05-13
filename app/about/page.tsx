@@ -119,11 +119,19 @@ const page = () => {
 
       {/* HERO SECTION */}
       <section
-        className="w-full text-white"
+        className=" relative w-full text-white"
         style={{
           background: "linear-gradient(to right, #141D3D, #364FA3)",
         }}
       >
+        <Image
+          alt="Hero Background"
+          src="/graph1.jpeg"
+          className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+          width={1920}
+          height={100}
+
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-12 sm:py-16 xl:py-20 text-center">
           <h1 className="text-2xl sm:text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
             {data.hero.title}
@@ -310,11 +318,19 @@ const page = () => {
 
       {/* WEEE COMPLIANCE */}
       <section
-        className="w-full text-white"
+        className=" relative w-full text-white"
         style={{
           background: "linear-gradient(to right, #141D3D, #364FA3)",
         }}
       >
+        <Image
+          alt="Hero Background"
+          src="/graph1.jpeg"
+          className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+          width={1920}
+          height={100}
+
+        />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 xl:px-10 py-12 sm:py-16">
           <div className="grid md:grid-cols-3 gap-8 items-start">
             {/* LEFT CONTENT */}

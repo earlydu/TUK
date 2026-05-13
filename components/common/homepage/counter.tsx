@@ -13,7 +13,7 @@ const Counter = () => {
   const [stats, setStats] = useState<StatItem[]>([
     { number: "1984", label: "Founded in London", prefix: "", suffix: "" },
     { number: "9001", label: "Quality Certified", prefix: "ISO ", suffix: "" },
-    { number: "10", label: "Countries Served", prefix: "", suffix: "+" },
+    { number: "10", label: " Across the world", prefix: "", suffix: "+" },
     { number: "20K", label: "End Users", prefix: "", suffix: "+" },
   ]);
 

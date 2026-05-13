@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, MapIcon } from "lucide-react";
 import {
   IconMapPin,
   IconPhone,
@@ -31,6 +31,7 @@ import {
   validatePhone,
   validateRequired,
 } from "@/src/lib/validation";
+import Image from "next/image";
 
 interface ContactPageData {
   hero: { title: string; subtitle: string };
@@ -39,6 +40,10 @@ interface ContactPageData {
     address: { label: string; value: string };
     phone: { label: string; value: string };
     email: { label: string; value: string };
+    what3words: {
+      label: string;
+      value: "https://what3words.com/fully.task.linked";
+    };
   };
 }
 
@@ -171,11 +176,19 @@ const Page = () => {
       <section className="w-full bg-gray-100 font-poppins">
         {/* HEADER */}
         <div
-          className="w-full h-72 text-white items-center py-16"
+          className="relative w-full h-72 text-white items-center py-16"
           style={{
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
+          <Image
+            alt="Hero Background"
+            src="/graph1.jpeg"
+            className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+            width={1920}
+            height={100}
+
+          />
           <div className="max-w-7xl mx-auto px-6 text-center space-y-4">
             <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
               {pageData?.hero.title ?? "Contact Us"}
@@ -240,6 +253,23 @@ const Page = () => {
                 </p>
                 <p className="group-hover:text-[#2596BE] transition-colors">
                   {pageData?.contactInfo.email.value}
+                </p>
+              </div>
+            </a>
+            {/* what 3 words */}
+            <a
+              href={`https://what3words.com/fully.task.linked`}
+              target="_blank"
+              className="flex gap-4 group cursor-pointer"
+            >
+              <div className="p-2 rounded-md bg-[#2596BE1A] group-hover:bg-[#2596BE33] transition-colors">
+                <MapIcon className="text-[#2596BE]" />
+              </div>
+              <div className="text-sm text-gray-700">
+                <p className="font-semibold">What 3 words</p>
+                <p className="group-hover:text-[#2596BE] transition-colors">
+                  {
+                    "fully.task.linked"}
                 </p>
               </div>
             </a>

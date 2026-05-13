@@ -94,11 +94,20 @@ const page = () => {
 
       {/* Hero Section */}
       <section
-        className="text-white"
+        className="text-white relative"
         style={{
           background: "linear-gradient(to right, #141D3D, #364FA3)",
         }}
+
       >
+        <Image
+          alt="Hero Background"
+          src="/graph1.jpeg"
+          className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+          width={1920}
+          height={100}
+
+        />
         <div className="max-w-7xl mx-auto px-4 py-16 text-center">
           <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
             Authorised Distributors
@@ -176,7 +185,7 @@ const page = () => {
                       className="-mb-4 w-full cursor-pointer font-poppins flex items-center justify-center gap-2 bg-gray-100 hover:bg-gray-200"
                     >
                       {item.name.trim().toLowerCase() ===
-                      "become an authorised tuk distributor"
+                        "become an authorised tuk distributor"
                         ? "Apply Now"
                         : "Visit Store"}
 

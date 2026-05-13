@@ -19,9 +19,16 @@ import {
 
 const Footer = () => {
   return (
-    <footer className="bg-[#16233a] text-white">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 xl:px-16 py-12">
-        <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-4">
+    <footer className="bg-[#16233a] text-white relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-10 xl:px-16 py-12 z-10">
+        <Image
+          src="/graph2.jpeg"
+          alt=""
+          width={1000}
+          height={500}
+          className="absolute top-0 right-0 object-fill w-full z-0 opacity-10 "
+        />
+        <div className="grid gap-10 md:grid-cols-2 xl:grid-cols-4 relative z-10">
           {/* company info */}
           <div className="space-y-4">
             <div className="flex items-center gap-3">
@@ -117,6 +124,12 @@ const Footer = () => {
               </Link>
               <Link href="/category?categoryId=049a6145-980d-4a0a-bd77-47610070e046">
                 UK Voice Connectivity
+              </Link>
+              <Link href="/product/featured">
+                Featured Products
+              </Link>
+              <Link href="/product/new-arrivals">
+                New Arrivals
               </Link>
             </div>
           </div>

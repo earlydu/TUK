@@ -142,11 +142,19 @@ export default function RequestQuoteForm() {
 
       <section className="w-full font-poppins bg-muted/40">
         <div
-          className="w-full h-72 text-white flex flex-col items-center justify-center gap-4 px-4 text-center"
+          className="relative w-full h-72 text-white flex flex-col items-center justify-center gap-4 px-4 text-center"
           style={{
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
+          <Image
+            alt="Hero Background"
+            src="/graph1.jpeg"
+            className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+            width={1920}
+            height={100}
+
+          />
           <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
             Request a Quote
           </h1>
@@ -286,8 +294,8 @@ export default function RequestQuoteForm() {
                                       ...form,
                                       productIds: isSelected
                                         ? form.productIds.filter(
-                                            (id) => id !== product.id,
-                                          )
+                                          (id) => id !== product.id,
+                                        )
                                         : [...form.productIds, product.id],
                                     });
                                   }}
@@ -323,10 +331,10 @@ export default function RequestQuoteForm() {
                                 .toLowerCase()
                                 .includes(productSearch.toLowerCase()),
                             ).length === 0 && (
-                              <div className="p-3 text-sm text-gray-500 text-center">
-                                No products found
-                              </div>
-                            )}
+                                <div className="p-3 text-sm text-gray-500 text-center">
+                                  No products found
+                                </div>
+                              )}
                           </div>
                         </div>
                       )}

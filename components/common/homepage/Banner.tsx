@@ -25,19 +25,19 @@ type BannerSlide = {
 };
 
 const fallbackSlides = [
-  {
-    img: "/banner 3.png",
-    title: (
-      <>
-        Download <span className="text-[#F97316]">Product</span>
-        <br />
-        Guide
-      </>
-    ),
-    desc: "Access detailed specifications, features, and complete information about our connectivity and cabling solutions.",
-    btn: "Download product guide →",
-    link: "#product-guide",
-  },
+  // {
+  //   img: "/banner 3.png",
+  //   title: (
+  //     <>
+  //       Download <span className="text-[#F97316]">Product</span>
+  //       <br />
+  //       Guide
+  //     </>
+  //   ),
+  //   desc: "Access detailed specifications, features, and complete information about our connectivity and cabling solutions.",
+  //   btn: "Download product guide →",
+  //   link: "#product-guide",
+  // },
   {
     img: "/banner 2.png",
     title: (
@@ -164,9 +164,8 @@ const Banner = () => {
           <button
             key={index}
             onClick={() => api?.scrollTo(index)}
-            className={`h-3 w-3 rounded-full transition ${
-              active === index ? "bg-[#F97316]" : "bg-white/40"
-            }`}
+            className={`h-3 w-3 rounded-full transition ${active === index ? "bg-[#F97316]" : "bg-white/40"
+              }`}
           />
         ))}
       </div>

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { IconHeart, IconArrowUpRight } from "@tabler/icons-react";
+import { IconHeart, IconArrowUpRight, IconArrowRight } from "@tabler/icons-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -66,8 +66,15 @@ const Arrivals = () => {
     return (
       <section className="w-full bg-white font-poppins">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 xl:px-8 py-3 space-y-10">
-          <div className="text-center">
+          <div className="flex items-center justify-between">
             <h2 className="text-2xl xl:text-3xl font-bold">New Arrivals</h2>
+            <Link
+              href="/product/new-arrivals"
+              className="text-[#007AFF] font-bold flex items-center gap-1 font-poppins text-sm sm:text-base hover:underline"
+            >
+              View All
+              <IconArrowRight size={18} />
+            </Link>
           </div>
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-8">
             {[1, 2, 3, 4].map((i) => (
@@ -87,12 +94,19 @@ const Arrivals = () => {
   return (
     <section className="w-full bg-white font-poppins">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 xl:px-8 py-3 space-y-10">
-        <div className="text-center">
+        <div className="flex items-center justify-between">
           <h2 className="text-2xl xl:text-3xl font-bold">New Arrivals</h2>
+          <Link
+            href="/product/new-arrivals"
+            className="text-[#007AFF] font-bold flex items-center gap-1 font-poppins text-sm sm:text-base hover:underline"
+          >
+            View All
+            <IconArrowRight size={18} />
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6 items-stretch">
-          {products.slice(0, 4).map((item: any) => (
+          {products.slice(0, 8).map((item: any) => (
             <Link key={item.id} href={`/product/${item.slug}`}>
               <div className="bg-background border rounded-xl overflow-hidden hover:shadow-lg transition cursor-pointer h-full flex flex-col">
                 <div className="relative w-full h-28 sm:h-40 xl:h-56">

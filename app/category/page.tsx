@@ -8,6 +8,7 @@ import Footer from "@/components/common/footer";
 import FilterSide from "@/components/common/category/FilterSide";
 import CategoryDefine from "@/components/common/category/CategoryDefine";
 import { CategoryFilter } from "./CategoryFilter";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic";
 
@@ -31,11 +32,19 @@ export default function Page() {
       {/* BREADCRUMB */}
       <div className="w-full bg-gray-100 border-b font-poppins">
         <div
-          className="w-full h-72 text-center flex flex-col items-center justify-center gap-3 text-white"
+          className="relative w-full h-72 text-center flex flex-col items-center justify-center gap-3 text-white"
           style={{
             background: "linear-gradient(to right, #141D3D, #364FA3)",
           }}
         >
+          <Image
+            alt="Hero Background"
+            src="/graph1.jpeg"
+            className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+            width={1920}
+            height={100}
+
+          />
           <h1 className="text-3xl md:text-4xl xl:text-5xl font-semibold font-poppins">
             Products
           </h1>

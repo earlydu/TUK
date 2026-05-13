@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { IconHeart, IconArrowUpRight } from "@tabler/icons-react";
+import { IconHeart, IconArrowUpRight, IconArrowRight } from "@tabler/icons-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
@@ -64,15 +64,22 @@ const FeaturedProducts = () => {
   if (loading) {
     return (
       <section className="w-full bg-white font-poppins">
-        <div className="max-w-6xl mx-auto px-4 py-5 space-y-6">
-          <div className="text-center">
+        <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
+          <div className="flex items-center justify-between">
             <h2 className="text-2xl xl:text-3xl font-bold">
               Featured Products
             </h2>
+            <Link
+              href="/product/featured"
+              className="text-[#007AFF] font-bold flex items-center gap-1 font-poppins text-sm sm:text-base hover:underline"
+            >
+              View All
+              <IconArrowRight size={18} />
+            </Link>
           </div>
 
           <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6">
-            {[1, 2, 3, 4].map((i) => (
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
               <div
                 key={i}
                 className="h-64 rounded-xl bg-gray-100 animate-pulse"
@@ -87,12 +94,19 @@ const FeaturedProducts = () => {
   return (
     <section className="w-full bg-white font-poppins">
       <div className="max-w-6xl mx-auto px-4 py-5 space-y-6">
-        <div className="text-center">
+        <div className="flex items-center justify-between">
           <h2 className="text-2xl xl:text-3xl font-bold">Featured Products</h2>
+          <Link
+            href="/product/featured"
+            className="text-[#007AFF] font-bold flex items-center gap-1 font-poppins text-sm sm:text-base hover:underline"
+          >
+            View All
+            <IconArrowRight size={18} />
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6">
-          {products.slice(0, 4).map((item: any) => (
+          {products.slice(0, 8).map((item: any) => (
             <Link href={`/product/${item.slug}`} key={item.id}>
               <div className="border rounded-xl overflow-hidden hover:shadow-lg transition h-full flex flex-col bg-white">
                 {/* Image */}

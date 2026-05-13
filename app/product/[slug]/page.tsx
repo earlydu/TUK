@@ -10,6 +10,7 @@ import RelatedProducts from "@/components/common/Related Products";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import DitermsSelector from "./DitermsSelector";
+import Image from "next/image";
 
 interface ProductPageProps {
   params: Promise<{
@@ -49,11 +50,19 @@ export default async function Page({ params }: ProductPageProps) {
     <>
       <Header />
       <div
-        className="w-full  h-56 font-poppins"
+        className="relative w-full  h-56 font-poppins"
         style={{
           background: "linear-gradient(to right, #141D3D, #364FA3)",
         }}
       >
+        <Image
+          alt="Hero Background"
+          src="/graph1.jpeg"
+          className="absolute top-0 left-0 w-full h-full z-10 opacity-20 "
+          width={1920}
+          height={100}
+
+        />
         <h1 className="text-3xl font-semibold text-white text-center flex items-center justify-center h-full">
           {product.name}
         </h1>
