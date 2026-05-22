@@ -13,6 +13,8 @@ type Product = {
   image: string;
   category: string;
   productCode: string;
+  description?: string;
+  isActive?: boolean;
 };
 
 function SearchResults() {
@@ -80,16 +82,28 @@ function SearchResults() {
                     {product.name}
                   </h3>
 
-                  <p className="text-black text-sm font-semibold">
-                    ProductCode:&nbsp;
-                    <span className="text-gray-700 text-xs">
-                      {product.productCode || "N/A"}
-                    </span>
-                  </p>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <p className="text-black text-sm font-semibold">
+                      ProductCode:&nbsp;
+                      <span className="text-gray-700 text-xs">
+                        {product.productCode || "N/A"}
+                      </span>
+                    </p>
+                    {!product.isActive && (
+                      <span className="rounded-full bg-yellow-100 text-yellow-700 px-2 py-0.5 text-[10px] uppercase tracking-wider">
+                        Unpublished
+                      </span>
+                    )}
+                  </div>
 
                   <p className="text-gray-600 text-xs">
                     {product.category || "Uncategorized"}
                   </p>
+                  {product.description && (
+                    <p className="text-gray-600 text-xs line-clamp-2">
+                      {product.description}
+                    </p>
+                  )}
                 </div>
               </div>
             </Link>

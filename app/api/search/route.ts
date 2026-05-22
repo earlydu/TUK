@@ -1,7 +1,7 @@
 import { db } from "@/src/db";
 import { products, categories } from "@/src/db/schema";
 import { NextResponse } from "next/server";
-import { ilike, or, sql } from "drizzle-orm";
+import { ilike, or, sql, and, eq } from "drizzle-orm";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -19,15 +19,21 @@ export async function GET(req: Request) {
         image: products.bannerImageUrl,
         category: categories.name,
         slug: products.slug,
-        productCode: products.productCode
+        productCode: products.productCode,
+        description: products.description,
+        isActive: products.isActive,
       })
       .from(products)
       .leftJoin(categories, sql`${products.categoryId} = ${categories.id}`)
       .where(
-        or(
-          ilike(products.name, `%${query}%`),
-          ilike(categories.name, `%${query}%`),
-          ilike(products.productCode,`%${query}%`)
+        and(
+          eq(products.isActive, true),
+          or(
+            ilike(products.name, `%${query}%`),
+            ilike(categories.name, `%${query}%`),
+            ilike(products.productCode, `%${query}%`),
+            ilike(products.description, `%${query}%`)
+          )
         )
       )
       .limit(10);

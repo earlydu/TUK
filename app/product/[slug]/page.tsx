@@ -9,7 +9,6 @@ import RelatedProducts from "@/components/common/Related Products";
 
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import DitermsSelector from "./DitermsSelector";
 import Image from "next/image";
 
 interface ProductPageProps {

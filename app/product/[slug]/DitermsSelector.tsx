@@ -24,7 +24,7 @@ const DitermsSelector = ({ diTerms }: { diTerms: string }) => {
       // Optional cleanup if component unmounts
       // document.body.removeChild(script);
     };
-  }, []);
+  }, [diTerms]);
 
   return (
     <div>

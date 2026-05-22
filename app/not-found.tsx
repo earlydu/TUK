@@ -112,7 +112,10 @@ const Page = () => {
                 ) : results.length > 0 ? (
                   results.map((item) => (
                     <div
-                      onClick={() => router.push(`/product/${item.slug}`)}
+                      onClick={() => {
+                        (window as any).showGlobalLoader?.();
+                        router.push(`/product/${item.slug}`);
+                      }}
                       key={item.id}
                       className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
                     >

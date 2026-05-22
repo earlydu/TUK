@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter, Poppins, Barlow } from "next/font/google";
 import { Toaster } from "sonner";
 import Topbar from "@/components/common/topbar";
+import GlobalLoader from "@/components/common/GlobalLoader";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default function RootLayout({
         <Topbar />
         {children}
         <Toaster position="top-right" richColors />
+        <GlobalLoader />
       </body>
     </html>
   );

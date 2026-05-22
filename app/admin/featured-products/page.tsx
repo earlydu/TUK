@@ -4,14 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { X } from "lucide-react";
+import { X, Loader2, Search } from "lucide-react";
 
 type Product = {
   id: string;
   name: string;
   slug: string;
   brand: string;
-  sku: string;
+  sku?: string;
+  productCode?: string;
+  code?: string;
+  description?: string;
   bannerImageUrl: string;
   isFeatured: boolean;
 };
@@ -21,6 +24,7 @@ export default function FeaturedProductsPage() {
   const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
 
   // Fetch featured products
   useEffect(() => {
@@ -57,6 +61,7 @@ export default function FeaturedProductsPage() {
 
   const handleAddFeatured = async (productId: string) => {
     try {
+      setTogglingId(productId);
       const res = await fetch("/api/products/featured", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -79,6 +84,8 @@ export default function FeaturedProductsPage() {
       }
     } catch (error) {
       toast.error("Failed to add featured product");
+    } finally {
+      setTogglingId(null);
     }
   };
 
@@ -106,7 +113,7 @@ export default function FeaturedProductsPage() {
     ? allProducts.filter((p) => {
         const isFeatured = featuredProducts.some((fp) => fp.id === p.id);
         if (isFeatured) return false; // Don't show already featured products
-        const searchable = [p.name, p.slug, p.brand, p.sku]
+        const searchable = [p.name, p.slug, p.brand, p.sku, p.productCode, p.code, p.description]
           .filter(Boolean)
           .join(" ")
           .toLowerCase();
@@ -133,33 +140,51 @@ export default function FeaturedProductsPage() {
                 Add Featured Product
               </h2>
               <div className="space-y-3">
-                <Input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full"
-                />
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Input
+                    type="text"
+                    placeholder="Search by name, SKU, brand…"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9 w-full"
+                  />
+                </div>
 
                 {searchQuery && filteredProducts.length > 0 && (
-                  <div className="border border-gray-200 rounded-lg max-h-96 overflow-y-auto">
+                  <div className="border border-gray-200 rounded-lg max-h-96 overflow-y-auto shadow-sm">
                     {filteredProducts.map((product) => (
                       <div
                         key={product.id}
-                        className="p-3 border-b hover:bg-gray-50 flex items-center justify-between"
+                        className="p-3 border-b last:border-b-0 hover:bg-gray-50 flex items-center gap-3"
                       >
-                        <div>
-                          <p className="font-medium text-sm text-gray-800">
+                        {product.bannerImageUrl && (
+                          <img
+                            src={product.bannerImageUrl}
+                            alt={product.name}
+                            className="w-10 h-10 rounded object-cover flex-shrink-0 border"
+                          />
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm text-gray-800 truncate">
                             {product.name}
                           </p>
-                          <p className="text-xs text-gray-500">{product.sku}</p>
+                          <p className="text-xs text-gray-400">{product.sku || product.productCode || product.code || "—"}</p>
+                          {product.description && (
+                            <p className="text-xs text-gray-400 line-clamp-2">{product.description}</p>
+                          )}
                         </div>
                         <Button
                           size="sm"
+                          disabled={togglingId === product.id}
                           onClick={() => handleAddFeatured(product.id)}
-                          className="bg-green-600 hover:bg-green-700 text-white"
+                          className="bg-green-600 hover:bg-green-700 text-white flex-shrink-0"
                         >
-                          Add
+                          {togglingId === product.id ? (
+                            <Loader2 className="h-3 w-3 animate-spin" />
+                          ) : (
+                            "Add"
+                          )}
                         </Button>
                       </div>
                     ))}
@@ -167,8 +192,14 @@ export default function FeaturedProductsPage() {
                 )}
 
                 {searchQuery && filteredProducts.length === 0 && !loading && (
-                  <p className="text-sm text-gray-500 p-3">
-                    No available products found
+                  <p className="text-sm text-gray-400 px-3 py-4 text-center border border-dashed rounded-lg">
+                    No products found matching "{searchQuery}"
+                  </p>
+                )}
+
+                {!searchQuery && (
+                  <p className="text-xs text-gray-400 text-center pt-2">
+                    Type to search from {allProducts.length} products
                   </p>
                 )}
               </div>

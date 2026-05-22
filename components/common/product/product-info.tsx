@@ -67,6 +67,15 @@ export default function ProductInfo({ product }: ProductInfoProps) {
     const items = getWishlist();
     setWishlistIds(items.map((i: any) => i.id));
   }, []);
+
+  useEffect(() => {
+    // Hide global loader when product info mounts
+    try {
+      (window as any).hideGlobalLoader?.();
+    } catch (e) {
+      // noop
+    }
+  }, []);
   const handleWishlist = (product: any) => {
     let wishlist = getWishlist();
 

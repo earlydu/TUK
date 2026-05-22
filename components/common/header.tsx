@@ -28,6 +28,8 @@ type Product = {
   image: string;
   category: string;
   productCode: string;
+  description?: string;
+  isActive?: boolean;
 };
 
 export default function Header() {
@@ -125,7 +127,10 @@ export default function Header() {
               ) : results.length > 0 ? (
                 results.map((item) => (
                   <div
-                    onClick={() => router.push(`/product/${item.slug}`)}
+                    onClick={() => {
+                      (window as any).showGlobalLoader?.();
+                      router.push(`/product/${item.slug}`);
+                    }}
                     key={item.id}
                     className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
                   >
@@ -138,11 +143,21 @@ export default function Header() {
                     />
 
                     <div className="flex-1">
-                      <p className="text-sm font-medium">{item.name}</p>
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium">{item.name}</p>
+                        {!item.isActive && (
+                          <span className="rounded-full bg-yellow-100 text-yellow-700 px-2 py-0.5 text-[10px] uppercase tracking-wider">
+                            Unpublished
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-gray-500">{item.category}</p>
-                      <p className="text-xs text-gray-500">
-                        {item.productCode}
-                      </p>
+                      <p className="text-xs text-gray-500">{item.productCode}</p>
+                      {item.description && (
+                        <p className="text-xs text-gray-500 line-clamp-2">
+                          {item.description}
+                        </p>
+                      )}
                     </div>
                   </div>
                 ))
@@ -259,15 +274,16 @@ export default function Header() {
                   <p className="p-3 text-sm">Searching...</p>
                 ) : results.length > 0 ? (
                   results.map((item) => (
-                    <div
-                      onClick={() => {
-                        router.push(`/product/${item.slug}`);
-                        setShowMobileSearch(false);
-                        setQuery("");
-                      }}
-                      key={item.id}
-                      className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
-                    >
+                      <div
+                        onClick={() => {
+                          (window as any).showGlobalLoader?.();
+                          router.push(`/product/${item.slug}`);
+                          setShowMobileSearch(false);
+                          setQuery("");
+                        }}
+                        key={item.id}
+                        className="flex items-center gap-3 p-3 hover:bg-gray-100 cursor-pointer"
+                      >
                       <Image
                         src={item.image}
                         alt={item.name}
