@@ -65,7 +65,7 @@ export default async function Page({ params }: ProductPageProps) {
         <h1 className="text-3xl font-semibold text-white text-center flex items-center justify-center h-full">
           {product.name}
         </h1>
-        <p className="text-white text-center">{product.description}</p>
+  
       </div>
       {/* ✅ Breadcrumb Start */}
       <div className="w-full bg-gray-50 font-poppins ">
