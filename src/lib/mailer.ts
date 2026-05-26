@@ -13,7 +13,7 @@ export const transporter = nodemailer.createTransport({
 export const sendEmail = async (to: string, subject: string, text: string) => {
   await transporter.sendMail({
     from: `"Auth App" <${process.env.EMAIL_USER}>`,
-    to,
+    to:"earl@s4digi.com",
     subject,
     text,
   });
