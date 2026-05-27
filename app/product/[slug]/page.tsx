@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
 
@@ -16,6 +17,65 @@ interface ProductPageProps {
     slug: string;
   }>;
 }
+
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const { slug } = await params;
+
+  try {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const response = await fetch(`${baseUrl}/api/products/slug/${slug}`, {
+      cache: "no-store",
+    });
+
+    if (!response.ok) {
+      return {
+        title: "Product Not Found",
+        description: "The requested product could not be found.",
+      };
+    }
+
+    const product = await response.json();
+
+    const title = product.name;
+    const description =
+      product.shortDescription ||
+      product.description?.replace(/<[^>]*>/g, "").slice(0, 160) ||
+      `${product.name} — high-quality voice and data cabling product by TUK Ltd.`;
+    const image =
+      product.bannerImageUrl ||
+      product.images?.[0]?.imageUrl ||
+      "/og-image.png";
+
+    return {
+      title,
+      description,
+      openGraph: {
+        title: `${product.name} — TUK Ltd`,
+        description,
+        images: [{ url: image, alt: product.name }],
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${product.name} — TUK Ltd`,
+        description,
+        images: [image],
+      },
+      alternates: {
+        canonical: `/product/${slug}`,
+      },
+    };
+  } catch {
+    return {
+      title: "Product",
+      description: "TUK Ltd cabling product.",
+    };
+  }
+}
+
 
 export default async function Page({ params }: ProductPageProps) {
   const { slug } = await params;
