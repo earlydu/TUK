@@ -4,6 +4,7 @@ import { Inter, Poppins, Barlow } from "next/font/google";
 import { Toaster } from "sonner";
 import Topbar from "@/components/common/topbar";
 import GlobalLoader from "@/components/common/GlobalLoader";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,6 +29,9 @@ const barlow = Barlow({
 export const metadata: Metadata = {
   title: "Home Page - TUK Ltd",
   description: "",
+  verification: {
+    google: "uV9nyRbkqT34PZaTJRW6UbiOx-7VlDH0NwyxRH-l7_o",
+  },
 };
 
 export default function RootLayout({
@@ -47,6 +51,22 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${poppins.variable} ${barlow.variable}`}
       >
+        {/* Google Analytics 4 — G-1MK5QGNKMF */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-1MK5QGNKMF"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-1MK5QGNKMF', {
+              send_page_view: true
+            });
+          `}
+        </Script>
+
         <Topbar />
         {children}
         <Toaster position="top-right" richColors />
