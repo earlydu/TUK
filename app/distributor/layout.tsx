@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "TUK Ltd products are available worldwide through our trusted network of specialised partners. Find a distributor in your region.",
   },
   alternates: {
-    canonical: "/distributor",
+    canonical: "https://tuk.co.uk/distributor",
   },
 };
 

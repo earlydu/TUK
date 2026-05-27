@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "TUK Ltd privacy policy — learn how we collect, use, and protect your personal data. Covers all activities including cabling systems and connectivity products.",
   alternates: {
-    canonical: "/privacy-policy",
+    canonical: "https://tuk.co.uk/privacy-policy",
   },
 };
 

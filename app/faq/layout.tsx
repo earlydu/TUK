@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Get answers about TUK products, ordering, technical support, delivery and returns. Our team is ready to help.",
   },
   alternates: {
-    canonical: "/faq",
+    canonical: "https://tuk.co.uk/faq",
   },
 };
 

@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   description:
     "TUK Ltd terms and conditions of sale and use. Read our terms governing the purchase and use of our voice and data cabling products and services.",
   alternates: {
-    canonical: "/terms-conditions",
+    canonical: "https://tuk.co.uk/terms-conditions",
   },
 };
 

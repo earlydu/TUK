@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Nearly four decades at the forefront of the cabling industry. Discover our ISO 9001:2015 certified operations, core values, and WEEE compliance commitment.",
   },
   alternates: {
-    canonical: "/about",
+    canonical: "https://tuk.co.uk/about",
   },
 };
 

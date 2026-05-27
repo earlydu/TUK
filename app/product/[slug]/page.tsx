@@ -65,7 +65,7 @@ export async function generateMetadata({
         images: [image],
       },
       alternates: {
-        canonical: `/product/${slug}`,
+        canonical: `https://tuk.co.uk/product/${slug}`,
       },
     };
   } catch {

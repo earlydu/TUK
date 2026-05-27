@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Learn about TUK Ltd's WEEE compliance, environmental commitments, and product recycling procedures.",
   },
   alternates: {
-    canonical: "/legal-center",
+    canonical: "https://tuk.co.uk/legal-center",
   },
 };
 

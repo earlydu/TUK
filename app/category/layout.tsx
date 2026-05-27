@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Explore our comprehensive range of high-quality voice and data copper cabling products for B2B customers worldwide.",
   },
   alternates: {
-    canonical: "/category",
+    canonical: "https://tuk.co.uk/category",
   },
 };
 

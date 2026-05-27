@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Reach our expert team for product enquiries, technical support, or bespoke cabling requirements. Visit us in Wimbledon, London.",
   },
   alternates: {
-    canonical: "/contact-us",
+    canonical: "https://tuk.co.uk/contact-us",
   },
 };
 

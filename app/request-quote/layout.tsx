@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Get a fast, personalised quote for TUK Ltd cabling solutions. Competitive B2B pricing for your specific requirements.",
   },
   alternates: {
-    canonical: "/request-quote",
+    canonical: "https://tuk.co.uk/request-quote",
   },
 };
 

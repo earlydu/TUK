@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   alternates: {
-    canonical: "/search",
+    canonical: "https://tuk.co.uk/search",
   },
 };
 

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
       "Discover our most popular voice and data cabling products, curated for professionals.",
   },
   alternates: {
-    canonical: "/product/featured",
+    canonical: "https://tuk.co.uk/product/featured",
   },
 };
 
