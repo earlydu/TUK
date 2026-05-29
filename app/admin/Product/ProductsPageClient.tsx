@@ -262,9 +262,13 @@ export function ProductsPageClient() {
                   </TableCell>
                   <TableCell className="p-3 align-middle">
                     {p.category ? (
-                      <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
-                        {p.category}
-                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {p.category.split(", ").map((cat: string, i: number) => (
+                          <span key={i} className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-800">
+                            {cat}
+                          </span>
+                        ))}
+                      </div>
                     ) : (
                       <span className="text-gray-400 text-xs">No category</span>
                     )}

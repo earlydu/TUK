@@ -1,12 +1,13 @@
 import { db } from "@/src/db";
-import { products, categories } from "@/src/db/schema";
-import { eq } from "drizzle-orm";
+import { products, categories, productCategories } from "@/src/db/schema";
+import { eq, sql } from "drizzle-orm";
 
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const includeInactive = url.searchParams.get("includeInactive") === "true";
 
-  const query = db
+  // Get all products
+  const baseQuery = db
     .select({
       id: products.id,
       name: products.name,
@@ -22,14 +23,34 @@ export async function GET(req: Request) {
       isActive: products.isActive,
       createdAt: products.createdAt,
       categoryId: products.categoryId,
-      category: categories.name,
     })
-    .from(products)
-    .leftJoin(categories, eq(products.categoryId, categories.id));
+    .from(products);
 
-  const data = includeInactive
-    ? await query
-    : await query.where(eq(products.isActive, true));
+  const productRows = includeInactive
+    ? await baseQuery
+    : await baseQuery.where(eq(products.isActive, true));
+
+  // Get all category mappings in one query
+  const allCatMappings = await db
+    .select({
+      productId: productCategories.productId,
+      categoryName: categories.name,
+    })
+    .from(productCategories)
+    .innerJoin(categories, eq(productCategories.categoryId, categories.id));
+
+  // Build a map: productId -> category names
+  const catMap = new Map<string, string[]>();
+  for (const row of allCatMappings) {
+    if (!catMap.has(row.productId)) catMap.set(row.productId, []);
+    if (row.categoryName) catMap.get(row.productId)!.push(row.categoryName);
+  }
+
+  // Merge
+  const data = productRows.map((p) => ({
+    ...p,
+    category: catMap.get(p.id)?.join(", ") || null,
+  }));
 
   return Response.json(data);
 }

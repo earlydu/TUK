@@ -6,6 +6,7 @@ import {
   productImages,
   productDiTerms,
   productDistributor,
+  productCategories,
 } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
@@ -33,13 +34,14 @@ export async function POST(
     }
 
     // ── 2. Fetch all related data ──
-    const [features, specifications, images, diTerms, distributorLinks] =
+    const [features, specifications, images, diTerms, distributorLinks, categoryLinks] =
       await Promise.all([
         db.select().from(productFeatures).where(eq(productFeatures.productId, id)),
         db.select().from(productSpecifications).where(eq(productSpecifications.productId, id)),
         db.select().from(productImages).where(eq(productImages.productId, id)),
         db.select().from(productDiTerms).where(eq(productDiTerms.productId, id)),
         db.select().from(productDistributor).where(eq(productDistributor.productId, id)),
+        db.select().from(productCategories).where(eq(productCategories.productId, id)),
       ]);
 
     // ── 3. Build a unique slug ──
@@ -65,12 +67,19 @@ export async function POST(
           bannerImageUrl: original.bannerImageUrl,
           content: original.content,
           pdfUrl: original.pdfUrl,
-          isFeatured: false, // reset featured flag on copy
+          isFeatured: false,
           isActive: original.isActive,
         })
         .returning();
 
       const newId = newProduct.id;
+
+      // Categories (junction table)
+      if (categoryLinks.length > 0) {
+        await tx.insert(productCategories).values(
+          categoryLinks.map((c) => ({ productId: newId, categoryId: c.categoryId }))
+        );
+      }
 
       // Features
       if (features.length > 0) {

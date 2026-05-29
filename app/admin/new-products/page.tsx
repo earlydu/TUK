@@ -10,6 +10,7 @@ type Product = {
   id: string;
   name: string;
   slug: string;
+  description?: string;
   brand: string;
   sku: string;
   productCode: string;
@@ -106,7 +107,14 @@ export default function NewProductsPage() {
     ? allProducts.filter((p) => {
         const alreadyNew = newProducts.some((np) => np.id === p.id);
         if (alreadyNew) return false;
-        const searchable = [p.name, p.slug, p.brand, p.sku, p.productCode]
+        const searchable = [
+          p.name,
+          p.slug,
+          p.brand,
+          p.sku,
+          p.productCode,
+          p.description,
+        ]
           .filter(Boolean)
           .join(" ")
           .toLowerCase();
@@ -180,6 +188,11 @@ export default function NewProductsPage() {
                           <p className="text-xs text-gray-400">
                             {product.sku || product.productCode || "—"}
                           </p>
+                          {product.description && (
+                            <p className="text-xs text-gray-400 line-clamp-2">
+                              {product.description}
+                            </p>
+                          )}
                         </div>
                         <Button
                           size="sm"

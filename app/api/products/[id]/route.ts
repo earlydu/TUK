@@ -5,18 +5,20 @@ import {
   productSpecifications,
   productImages,
   productDiTerms,
+  productCategories,
   relatedProducts as relatedProductsTable,
 } from "@/src/db/schema";
 import { eq, or } from "drizzle-orm";
 import { NextResponse } from "next/server";
 import { distributors, productDistributor } from "@/src/db/schema";
+import { categories } from "@/src/db/schema";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ id: string }> } // ✅ FIX
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params; // ✅ VERY IMPORTANT
+    const { id } = await params;
 
     if (!id) {
       return NextResponse.json(
@@ -60,7 +62,19 @@ export async function GET(
       .from(productDiTerms)
       .where(eq(productDiTerms.productId, id));
 
-      const distributorsData = await db
+    // 🔥 Categories (from junction table)
+    const categoryRows = await db
+      .select({
+        categoryId: productCategories.categoryId,
+        categoryName: categories.name,
+      })
+      .from(productCategories)
+      .leftJoin(categories, eq(productCategories.categoryId, categories.id))
+      .where(eq(productCategories.productId, id));
+
+    const categoryIds = categoryRows.map((r) => r.categoryId);
+
+    const distributorsData = await db
       .select({
         distributor: distributors,
       })
@@ -85,9 +99,10 @@ export async function GET(
     );
 
     const relatedCategoriesQuery = await db
-      .select({ categoryId: products.categoryId })
+      .select({ categoryId: productCategories.categoryId })
       .from(relatedProductsTable)
       .leftJoin(products, eq(relatedProductsTable.relatedProductId, products.id))
+      .leftJoin(productCategories, eq(productCategories.productId, products.id))
       .where(eq(relatedProductsTable.productId, id));
 
     const relatedCategoryIds = Array.from(
@@ -100,6 +115,7 @@ export async function GET(
 
     return NextResponse.json({
       ...product,
+      categoryIds,
       features,
       specifications,
       images,
@@ -120,10 +136,10 @@ export async function GET(
 // ✅ PUT (for update button)
 export async function PUT(
   req: Request,
-  { params }: { params: Promise<{ id: string }> } // ✅ FIX
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await params; // ✅ MUST
+    const { id } = await params;
 
     if (!id) {
       return Response.json({ error: "Missing ID" }, { status: 400 });
@@ -141,6 +157,7 @@ export async function PUT(
     if (body.sku !== undefined) updateData.sku = body.sku;
     if (body.productCode !== undefined)
       updateData.productCode = body.productCode;
+    // Backward compat: accept single categoryId
     if (body.categoryId !== undefined)
       updateData.categoryId = body.categoryId;
     if (body.bannerImageUrl !== undefined)
@@ -151,8 +168,26 @@ export async function PUT(
     if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
     if (body.isNew !== undefined) updateData.isNew = body.isNew;
 
+    // Handle multi-category: update primary categoryId from categoryIds array
+    if (body.categoryIds !== undefined && body.categoryIds.length > 0) {
+      updateData.categoryId = body.categoryIds[0];
+    }
+
     if (Object.keys(updateData).length > 0) {
       await db.update(products).set(updateData).where(eq(products.id, id));
+    }
+
+    // 🔥 Update product_categories junction table
+    if (body.categoryIds !== undefined) {
+      await db.delete(productCategories).where(eq(productCategories.productId, id));
+      if (body.categoryIds.length > 0) {
+        await db.insert(productCategories).values(
+          body.categoryIds.map((catId: string) => ({
+            productId: id,
+            categoryId: catId,
+          }))
+        );
+      }
     }
 
     if (body.features !== undefined) {
@@ -254,11 +289,12 @@ export async function PUT(
         body.relatedCategories !== undefined &&
         body.relatedCategories.length > 0
       ) {
-        for (const categoryId of body.relatedCategories) {
+        for (const catId of body.relatedCategories) {
           const categoryProducts = await db
             .select({ id: products.id })
             .from(products)
-            .where(eq(products.categoryId, categoryId));
+            .innerJoin(productCategories, eq(productCategories.productId, products.id))
+            .where(eq(productCategories.categoryId, catId));
 
           categoryProducts
             .filter((productRow) => productRow.id !== id)
@@ -314,6 +350,7 @@ export async function DELETE(
     await db.delete(productImages).where(eq(productImages.productId, id));
     await db.delete(productDiTerms).where(eq(productDiTerms.productId, id));
     await db.delete(productDistributor).where(eq(productDistributor.productId, id));
+    await db.delete(productCategories).where(eq(productCategories.productId, id));
     await db
       .delete(relatedProductsTable)
       .where(

@@ -16,6 +16,8 @@ import {
   IconFileText,
   IconHeart,
   IconRosetteDiscountCheck,
+  IconFileTypePdf,
+  IconDownload,
 } from "@tabler/icons-react";
 import DitermsSelector from "@/app/product/[slug]/DitermsSelector";
 import Link from "next/link";
@@ -35,17 +37,28 @@ interface ProductInfoProps {
     productCode?: string;
     sku?: string;
     brand?: string;
+    pdfUrl?: string;
+    bannerImageUrl?: string;
     features?: Array<{ feature: string }>;
     specifications?: Array<{ key: string; value: string }>;
     diTerms?: Array<{ value: string }>;
     distributors?: {
       id: string;
       name: string;
+      image?: string;
     }[];
   };
 }
 
+// interface TechnicalDataSheetProps {
+//   product?: {
+//     pdfUrl?: string;
+//     name?: string;
+//   };
+// }
+
 export default function ProductInfo({ product }: ProductInfoProps) {
+  const pdfUrl = product?.pdfUrl;
   const [qty, setQty] = useState(1);
   const [wishlistIds, setWishlistIds] = useState<string[]>([]);
   const isWishlisted = wishlistIds.includes(product?.id as string);
@@ -188,36 +201,39 @@ export default function ProductInfo({ product }: ProductInfoProps) {
         </div>
       )}
 
-      <div className="flex flex-row flex-wrap gap-4 w-full font-poppins">
-        {/* Request Quote */}
-        <Link
-          href={`/request-quote?productId=${product?.id || ""}`}
-          className="flex-1"
-        >
-          <Button className="w-full h-14 sm:h-12 rounded-full cursor-pointer bg-[#0b0bbf] hover:bg-[#0b0bbf] text-white text-base sm:text-sm font-medium flex items-center justify-center gap-2 px-6">
-            <IconFileText size={20} />
-            Request Quote
-          </Button>
-        </Link>
+      <div className="w-full border rounded-xl bg-white flex items-center justify-between gap-6 p-6 flex-wrap">
+      {/* Left Section */}
 
-        {/* Wishlist */}
-        <Button
-          onClick={(e) => {
-            e.preventDefault();
-            handleWishlist(product);
-          }}
-          variant="outline"
-          className="flex-1 w-full h-14 sm:h-12 rounded-full font-poppins cursor-pointer border-[#0b0bbf] text-[#0b0bbf] hover:bg-transparent text-base sm:text-sm font-medium flex items-center justify-center gap-2 px-6"
-        >
-          <IconHeart
-            size={20}
-            className={`transition-all ${
-              isWishlisted ? "fill-red-500 text-red-500" : "text-[#0b0bbf]"
-            }`}
-          />
-          {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
-        </Button>
+      <div className="flex items-center gap-4">
+        <div className="bg-[#eb3e3e] text-white rounded-xl p-4 flex items-center justify-center">
+          <IconFileTypePdf size={26} />
+        </div>
+
+        <div className="flex flex-col">
+          <h3 className="font-semibold text-xl font-poppins">
+            Technical Data Sheet
+          </h3>
+
+          <p className="text-muted-foreground text-sm font-inter">
+            Complete specifications, installation guide, and compliance
+            certificate
+          </p>
+        </div>
       </div>
+
+      {/* Download Button */}
+
+      <Button
+        className="rounded-full flex  items-center gap-2 font-inter cursor-pointer"
+        disabled={!pdfUrl}
+        onClick={() => pdfUrl && window.open(pdfUrl, "_blank")}
+      >
+        <IconDownload size={18} />
+        Download Datasheet
+      </Button>
+    </div>
+
+      
       <DitermsSelector diTerms={diTerms} />
       {/* B2B Pricing Box */}
       <div className="flex items-start gap-4 bg-gray-100 border rounded-xl p-4 font-poppins">
@@ -275,6 +291,37 @@ export default function ProductInfo({ product }: ProductInfoProps) {
           </div>
         </>
       )}
+
+      <div className="flex flex-row flex-wrap gap-4 w-full font-poppins">
+        {/* Request Quote */}
+        <Link
+          href={`/request-quote?productId=${product?.id || ""}`}
+          className="flex-1"
+        >
+          <Button className="w-full h-14 sm:h-12 rounded-full cursor-pointer bg-[#0b0bbf] hover:bg-[#0b0bbf] text-white text-base sm:text-sm font-medium flex items-center justify-center gap-2 px-6">
+            <IconFileText size={20} />
+            Request Quote
+          </Button>
+        </Link>
+
+        {/* Wishlist */}
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            handleWishlist(product);
+          }}
+          variant="outline"
+          className="flex-1 w-full h-14 sm:h-12 rounded-full font-poppins cursor-pointer border-[#0b0bbf] text-[#0b0bbf] hover:bg-transparent text-base sm:text-sm font-medium flex items-center justify-center gap-2 px-6"
+        >
+          <IconHeart
+            size={20}
+            className={`transition-all ${
+              isWishlisted ? "fill-red-500 text-red-500" : "text-[#0b0bbf]"
+            }`}
+          />
+          {isWishlisted ? "Wishlisted" : "Add to Wishlist"}
+        </Button>
+      </div>
 
       {/* Footer Info */}
       {/* <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 font-poppins">

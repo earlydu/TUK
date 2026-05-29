@@ -45,11 +45,10 @@ export const products = pgTable("products", {
   bannerImageUrl:text("banner_image_url"),
   shortDescription: text("short_description"),
   categoryId: uuid("category_id")
-  .references(() => categories.id)
-  .notNull(),
+  .references(() => categories.id),
   brand: varchar("brand", { length: 255 }),
   sku: varchar("sku", { length: 100 }),
-  productCode: varchar("product_code", { length: 100 }),
+  productCode: text("product_code"),
   pdfUrl: text("pdf_url"),
   content: json("content"),
   isFeatured: boolean("is_featured").default(false),
@@ -106,6 +105,16 @@ export const productDiTerms = pgTable("product_di_terms", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const productCategories = pgTable("product_categories", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  productId: uuid("product_id")
+    .references(() => products.id, { onDelete: "cascade" })
+    .notNull(),
+  categoryId: uuid("category_id")
+    .references(() => categories.id, { onDelete: "cascade" })
+    .notNull(),
+});
+
 export const productsRelations = relations(products, ({ many, one }) => ({
   images: many(productImages),
   features: many(productFeatures),
@@ -113,6 +122,7 @@ export const productsRelations = relations(products, ({ many, one }) => ({
   relatedProductLinks: many(relatedProducts, { relationName: "product" }),
   relatedAsRelated: many(relatedProducts, { relationName: "relatedProduct" }),
   diTerms: many(productDiTerms),
+  productCategories: many(productCategories),
   category: one(categories, {
     fields: [products.categoryId],
     references: [categories.id],
@@ -157,6 +167,17 @@ export const productDiTermsRelations = relations(productDiTerms, ({ one }) => ({
   product: one(products, {
     fields: [productDiTerms.productId],
     references: [products.id],
+  }),
+}));
+
+export const productCategoriesRelations = relations(productCategories, ({ one }) => ({
+  product: one(products, {
+    fields: [productCategories.productId],
+    references: [products.id],
+  }),
+  category: one(categories, {
+    fields: [productCategories.categoryId],
+    references: [categories.id],
   }),
 }));
 

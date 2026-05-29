@@ -132,7 +132,7 @@ export default function RootLayout({
           `}
         </Script>
 
-        <Topbar />
+        {/* <Topbar /> */}
         {children}
         <Toaster position="top-right" richColors />
         <GlobalLoader />

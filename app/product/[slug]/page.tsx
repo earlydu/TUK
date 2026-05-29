@@ -163,12 +163,13 @@ export default async function Page({ params }: ProductPageProps) {
               bannerImageUrl={product.bannerImageUrl}
               images={product.images || []}
             />
+            
             <ProductInfo product={product} />
           </div>
 
           {/* Technical Data Sheet Section */}
           <div className="mt-10">
-            <TechnicalDataSheet product={product} />
+            
 
             <ProductDetailsTabs product={product} />
             <RelatedProducts

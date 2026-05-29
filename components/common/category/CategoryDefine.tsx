@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/pagination";
 import Link from "next/link";
 
-const CategoryDefine = ({ category, sort, setSort }: any) => {
+const CategoryDefine = ({ category, sort, setSort, onCategoriesLoad }: any) => {
   const [categoryList, setCategoryList] = useState<any[]>([]);
   const [products, setProducts] = useState<any[]>([]);
   const [newProductIds, setNewProductIds] = useState<string[]>([]);
@@ -110,6 +110,8 @@ const CategoryDefine = ({ category, sort, setSort }: any) => {
         setNewProductIds(
           (Array.isArray(newData) ? newData : []).map((p: any) => p.id),
         );
+        // Notify parent page with full category list (used by slug route)
+        if (onCategoriesLoad) onCategoriesLoad(catData);
       } catch (error) {
         console.error(error);
       } finally {
@@ -125,9 +127,14 @@ const CategoryDefine = ({ category, sort, setSort }: any) => {
   let filtered =
     category === "All Categories"
       ? products
-      : products.filter(
-          (p: any) => String(p.categoryId) === String(selectedCat?.id),
-        );
+      : products.filter((p: any) => {
+          if (!p.category) return false;
+          // p.category is a comma-separated string of all category names
+          const productCategoryNames = p.category
+            .split(", ")
+            .map((n: string) => n.trim().toLowerCase());
+          return productCategoryNames.includes(category.trim().toLowerCase());
+        });
 
   if (sort === "name") {
     filtered = filtered.sort((a, b) => a.name.localeCompare(b.name));
@@ -183,23 +190,25 @@ const CategoryDefine = ({ category, sort, setSort }: any) => {
               )}
 
               <Image
-                src={item.bannerImageUrl || "/image/category.png"}
+                src={item.bannerImageUrl || ""}
                 alt={item.name}
                 width={500}
                 height={400}
-                className="w-full h-32 sm:h-44 object-cover"
+                className="w-full h-32 sm:h-44 object-contain"
               />
             </div>
 
-            <div className="p-4 space-y-2">
+            <div className=" p-4 space-y-2">
               <h3 className="font-semibold">{item.name}</h3>
 
-              <p className="text-black text-sm font-semibold">
-                ProductCode:&nbsp;
-                <span className="text-gray-700 text-xs">
-                  {item.code || item.productCode || item.sku || "N/A"}
-                </span>
-              </p>
+            <div className=" flex flex-col gap-1">
+                          <p className="text-black text-sm font-semibold">
+                            ProductCode:
+                          </p>
+                          <span className="text-gray-700 text-xs break-all ">
+                              {item.code || item.productCode || item.sku || "N/A"}
+                            </span>
+            </div>
 
               <div className="flex justify-between ">
                 <div>

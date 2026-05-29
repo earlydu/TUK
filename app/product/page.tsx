@@ -31,7 +31,7 @@ export default function Page() {
               typeof product.category === "object"
                 ? product.category?.name
                 : product.category || "",
-            image: product.bannerImageUrl || "/image/category.png",
+            image: product.bannerImageUrl || "",
             new: false,
             slug: product.slug,
             description: product.shortDescription,

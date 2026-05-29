@@ -2,17 +2,8 @@
 
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useEffect, useState } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useRouter } from "next/navigation";
 
 const FilterSide = ({ category, setCategory, sort, setSort }: any) => {
-  const router = useRouter();
   const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -21,8 +12,6 @@ const FilterSide = ({ category, setCategory, sort, setSort }: any) => {
       try {
         const res = await fetch("/api/category");
         const data = await res.json();
-
-        // 🔥 Add "All Categories" manually
         setCategories([{ id: "all", name: "All Categories" }, ...data]);
       } catch (error) {
         console.error("Error fetching categories:", error);
@@ -33,13 +22,13 @@ const FilterSide = ({ category, setCategory, sort, setSort }: any) => {
 
     fetchCategories();
   }, []);
+
   if (loading) {
     return <p className="p-4 text-sm">Loading categories...</p>;
   }
-  return (
-    <div className=" lg:block bg-white rounded-xl border p-6 space-y-8 font-poppins">
-      {/* CATEGORIES */}
 
+  return (
+    <div className="lg:block bg-white rounded-xl border p-6 space-y-8 font-poppins">
       <div className="space-y-5">
         <h3 className="text-sm font-semibold tracking-widest text-gray-500 font-poppins">
           CATEGORIES
@@ -48,15 +37,17 @@ const FilterSide = ({ category, setCategory, sort, setSort }: any) => {
         <RadioGroup
           value={category}
           onValueChange={(value) => {
+            // Update React state instantly — products re-filter with no navigation
             setCategory(value);
 
+            // Silently update the URL bar only (no page reload/remount)
             if (value === "All Categories") {
-              // For "All Categories", navigate without categoryId parameter
-              router.push(`/category`);
+              window.history.pushState(null, "", "/category");
             } else {
               const selected = categories.find((c) => c.name === value);
               if (selected) {
-                router.push(`/category?categoryId=${selected.id}`);
+                const slug = selected.slug || encodeURIComponent(selected.name);
+                window.history.pushState(null, "", `/category/${slug}`);
               }
             }
           }}
@@ -64,7 +55,6 @@ const FilterSide = ({ category, setCategory, sort, setSort }: any) => {
           {categories.map((cat: any) => (
             <div key={cat.id} className="flex items-center gap-3 font-poppins">
               <RadioGroupItem value={cat.name} id={cat.name} />
-
               <label htmlFor={cat.name} className="text-black cursor-pointer">
                 {cat.name}
               </label>
@@ -72,25 +62,6 @@ const FilterSide = ({ category, setCategory, sort, setSort }: any) => {
           ))}
         </RadioGroup>
       </div>
-
-      {/* SORT */}
-
-      {/* <div className="space-y-4">
-        <h3 className="text-sm font-semibold tracking-widest text-gray-500 font-poppins">
-          SORT BY
-        </h3>
-
-        <Select value={sort} onValueChange={setSort}>
-          <SelectTrigger className="w-full h-10 text-sm">
-            <SelectValue placeholder="Latest" />
-          </SelectTrigger>
-
-          <SelectContent className="font-poppins">
-            <SelectItem value="Latest">Latest</SelectItem>
-            <SelectItem value="name">Name</SelectItem>
-          </SelectContent>
-        </Select>
-      </div> */}
     </div>
   );
 };

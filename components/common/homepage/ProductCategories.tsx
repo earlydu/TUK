@@ -53,7 +53,7 @@ const ProductCategories = () => {
           {categories.map((item: any) => (
             <Link
               // Logic: URL me categoryId bhej raha hai jo aapke category page filters ko mil jayega
-              href={`/category?categoryId=${item.id}`}
+              href={`/category/${item.slug || encodeURIComponent(item.name)}`}
               key={item.id}
               className="relative overflow-hidden rounded-xl group cursor-pointer bg-white"
             >

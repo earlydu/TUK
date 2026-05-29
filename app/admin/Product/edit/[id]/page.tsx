@@ -47,7 +47,9 @@ export default function EditProductPage() {
     Additional: "",
   });
 
-  const [categoryId, setCategoryId] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [categorySearch, setCategorySearch] = useState("");
   const [features, setFeatures] = useState<string[]>([""]);
   const [specs, setSpecs] = useState<any[]>([{ key: "", value: "" }]);
   const [techspecs, setTechspecs] = useState<any[]>([{ key: "", value: "" }]);
@@ -92,7 +94,8 @@ export default function EditProductPage() {
           isNew: product.isNew || false,
         });
 
-        setCategoryId(data.categoryId || "");
+        // Categories (from junction table)
+        setSelectedCategories(data.categoryIds || (data.categoryId ? [data.categoryId] : []));
         setBannerImageUrl(data.bannerImageUrl || "");
 
         // Features
@@ -269,8 +272,8 @@ export default function EditProductPage() {
 
   // 🔥 UPDATE API CALL
   const handleUpdate = async () => {
-    if (!form.name || !form.slug || !categoryId) {
-      toast.error("Please fill required fields ❌");
+    if (!form.name || !form.slug || selectedCategories.length === 0) {
+      toast.error("Please fill required fields (name, slug, at least one category) ❌");
       return;
     }
 
@@ -291,7 +294,7 @@ export default function EditProductPage() {
           brand: form.brand,
           sku: form.sku,
           productCode: form.productCode,
-          categoryId,
+          categoryIds: selectedCategories,
           isFeatured: form.isFeatured,
           isNew: form.isNew,
           features: features.filter((f) => f?.trim()),
@@ -436,37 +439,102 @@ export default function EditProductPage() {
         {/* 🔹 Category & Related */}
         <div className="flex flex-col md:flex-row w-full gap-6">
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">
-            <h3 className="text-lg font-semibold">Category</h3>
+            <h3 className="text-lg font-semibold">Categories</h3>
 
-            <Select
-              value={categoryId}
-              onValueChange={(val) => {
-                setCategoryId(val || "");
-                if (isProductsMode) {
-                  setselectedRelated([]);
-                }
-              }}
-            >
-              <SelectTrigger>
-                <SelectValue
-                  children={() => {
-                    return categoryId
-                      ? categoriesList.find((cat) => cat.id === categoryId)
-                          ?.name
-                      : "Select Category";
-                  }}
-                  placeholder="Select Category"
-                />
-              </SelectTrigger>
+            <div className="relative">
+              <Button
+                variant="outline"
+                onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
+                className="w-full justify-between pl-3 pr-3"
+              >
+                {selectedCategories.length > 0
+                  ? `${selectedCategories.length} categor${selectedCategories.length === 1 ? "y" : "ies"} selected`
+                  : "Select categories..."}
+                <IconChevronDown className="h-4 w-4 opacity-50" />
+              </Button>
 
-              <SelectContent>
-                {categoriesList.map((cat) => (
-                  <SelectItem key={cat.id} value={cat.id}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              {isCategoryDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 z-50 mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-80 overflow-hidden">
+                  <div className="p-2 border-b">
+                    <Input
+                      placeholder="Search categories..."
+                      value={categorySearch}
+                      onChange={(e) => setCategorySearch(e.target.value)}
+                      className="h-8"
+                    />
+                  </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {categoriesList
+                      .filter((cat) =>
+                        cat.name
+                          .toLowerCase()
+                          .includes(categorySearch.toLowerCase())
+                      )
+                      .map((cat) => {
+                        const isSelected = selectedCategories.includes(cat.id);
+                        return (
+                          <div
+                            key={cat.id}
+                            className="flex items-center gap-3 p-3 hover:bg-gray-50 cursor-pointer"
+                            onClick={() => {
+                              setSelectedCategories((prev) =>
+                                isSelected
+                                  ? prev.filter((cid) => cid !== cat.id)
+                                  : [...prev, cat.id]
+                              );
+                            }}
+                          >
+                            <Checkbox
+                              checked={isSelected}
+                              className="pointer-events-none"
+                            />
+                            <div className="flex-1">
+                              <p className="text-sm font-medium">{cat.name}</p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    {categoriesList.filter((cat) =>
+                      cat.name
+                        .toLowerCase()
+                        .includes(categorySearch.toLowerCase())
+                    ).length === 0 && (
+                      <div className="p-3 text-sm text-gray-500 text-center">
+                        No categories found
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {selectedCategories.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {selectedCategories.map((catId) => {
+                  const cat = categoriesList.find((c) => c.id === catId);
+                  return cat ? (
+                    <Badge
+                      key={catId}
+                      variant="secondary"
+                      className="flex items-center gap-1"
+                    >
+                      {cat.name}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setSelectedCategories((prev) =>
+                            prev.filter((cid) => cid !== catId)
+                          )
+                        }
+                        className="ml-1 text-muted-foreground hover:text-foreground"
+                      >
+                        ×
+                      </button>
+                    </Badge>
+                  ) : null;
+                })}
+              </div>
+            )}
           </div>
 
           <div className="bg-white p-6 rounded-xl shadow space-y-4 w-full md:w-1/2">

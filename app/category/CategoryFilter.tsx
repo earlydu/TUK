@@ -13,43 +13,50 @@ export function CategoryFilter({
   onCategoriesLoad,
 }: CategoryFilterProps) {
   const searchParams = useSearchParams();
+  // New: read slug-based param; also support old ?categoryId=uuid for backward compat
+  const categorySlug = searchParams.get("category");
   const categoryId = searchParams.get("categoryId");
-  const [localCategories, setLocalCategories] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
       const res = await fetch("/api/category");
       const data = await res.json();
 
-      setLocalCategories(data);
-
-      // call parent ONLY once
       if (onCategoriesLoad) {
         onCategoriesLoad(data);
       }
 
-      // If categoryId is in URL, find and select that category
-      if (categoryId) {
-        // Handle "all" special case for "All Categories"
+      if (categorySlug) {
+        // Match by slug (new format)
+        const found = data.find(
+          (c: any) =>
+            c.slug === categorySlug ||
+            encodeURIComponent(c.name) === categorySlug
+        );
+        if (found) {
+          onCategoryChange(found.name);
+        } else {
+          onCategoryChange("All Categories");
+        }
+      } else if (categoryId) {
+        // Backward compat: match by ID (old format)
         if (categoryId === "all") {
           onCategoryChange("All Categories");
         } else {
           const found = data.find(
-            (c: any) => String(c.id) === String(categoryId),
+            (c: any) => String(c.id) === String(categoryId)
           );
-
           if (found) {
             onCategoryChange(found.name);
           }
         }
       } else {
-        // If no categoryId in URL, default to "All Categories"
         onCategoryChange("All Categories");
       }
     };
 
     fetchCategories();
-  }, [categoryId, onCategoryChange, onCategoriesLoad]);
+  }, [categorySlug, categoryId, onCategoryChange, onCategoriesLoad]);
 
   return null;
 }

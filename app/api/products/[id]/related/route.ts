@@ -1,5 +1,5 @@
 import { db } from "@/src/db";
-import { products, relatedProducts as relatedProductsTable } from "@/src/db/schema";
+import { products, productCategories, relatedProducts as relatedProductsTable } from "@/src/db/schema";
 import { eq } from "drizzle-orm";
 
 export async function GET(
@@ -28,13 +28,11 @@ export async function GET(
       )
       .where(eq(relatedProductsTable.productId, productId))
       .limit(8);
-    
-    // console.log("Related products:", related); // ✅ debug
 
     return Response.json(related);
   } catch (err: any) {
-    console.error("❌ RELATED API ERROR:", err); // 🔥 IMPORTANT
+    console.error("❌ RELATED API ERROR:", err);
 
-    return Response.json([], { status: 500 }); // always return array
+    return Response.json([], { status: 500 });
   }
 }

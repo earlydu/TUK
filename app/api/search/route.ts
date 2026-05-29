@@ -1,5 +1,5 @@
 import { db } from "@/src/db";
-import { products, categories } from "@/src/db/schema";
+import { products, categories, productCategories } from "@/src/db/schema";
 import { NextResponse } from "next/server";
 import { ilike, or, sql, and, eq } from "drizzle-orm";
 
@@ -13,7 +13,7 @@ export async function GET(req: Request) {
 
   try {
     const results = await db
-      .select({
+      .selectDistinct({
         id: products.id,
         name: products.name,
         image: products.bannerImageUrl,
@@ -24,7 +24,8 @@ export async function GET(req: Request) {
         isActive: products.isActive,
       })
       .from(products)
-      .leftJoin(categories, sql`${products.categoryId} = ${categories.id}`)
+      .leftJoin(productCategories, eq(productCategories.productId, products.id))
+      .leftJoin(categories, eq(productCategories.categoryId, categories.id))
       .where(
         and(
           eq(products.isActive, true),

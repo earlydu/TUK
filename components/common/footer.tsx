@@ -15,6 +15,8 @@ import {
   IconMapPin,
   IconBrandFacebookFilled,
   IconBrandFacebook,
+  IconMail,
+  IconPhone,
 } from "@tabler/icons-react";
 
 const Footer = () => {
@@ -49,7 +51,7 @@ const Footer = () => {
                   <p className="font-semibold text-lg font-barlow">TUK Ltd</p>
                 </Link>
                 <p className="text-orange-400 text-sm font-inter">
-                  Since 1984 · Wimbledon, London
+                  Since 1984 · Wimbledon, London, UK
                 </p>
               </div>
             </div>
@@ -58,6 +60,20 @@ const Footer = () => {
               Britain's leading B2B manufacturer and supplier of voice and data
               copper cabling suppliers. ISO 9001 certified. Trade only.
             </p>
+              <div className="flex gap-2 items-center text-[#9CA3AF] text-sm font-inter">
+                <IconMapPin size={18} className="text-[#FB923C]" />
+                <p>Wimbledon, London, UK</p>
+                
+              </div>
+            <div className="flex items-center gap-2 text-[#9CA3AF] text-sm font-inter">
+              <IconMail size={18} className="text-[#FB923C]" />
+              <Link href="mailto:sales@tuk.co.uk">sales@tuk.co.uk</Link>
+            </div>
+
+            <div className="flex items-center gap-2 text-[#9CA3AF] text-sm font-inter">
+              <IconPhone size={18} className="text-[#FB923C]" />
+              <Link href="tel:+4402089466688">+44 (0)20 8946 6688</Link>
+            </div>
 
             <div className="flex gap-3 pt-2">
               <Link
@@ -111,7 +127,7 @@ const Footer = () => {
                 miniMEDIA
               </Link>
               <Link href="/category?categoryId=3bb2c7a9-3f3e-4b9d-be7f-428caafab3d3">
-                Plugs for Data and Voices
+                Plugs for Data and Voice
               </Link>
               <Link href="/category?categoryId=796cce52-c1ab-4af6-b6f1-2e8c974f522a">
                 PCB Mount

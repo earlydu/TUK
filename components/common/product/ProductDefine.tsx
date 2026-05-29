@@ -198,7 +198,7 @@ const ProductDefine = ({ category, sort, setSort }: any) => {
                 alt={product.name}
                 width={500}
                 height={400}
-                className="w-auto h-32 sm:h-44 object-contain"
+                className="w-auto h-32 sm:h-44 object-cover"
               />
             </div>
 

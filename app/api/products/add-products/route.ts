@@ -6,6 +6,7 @@ import {
   productFeatures,
   productSpecifications,
   productDiTerms,
+  productCategories,
   relatedProducts as relatedProductsTable,
 } from "@/src/db/schema";
 import { productDistributor } from "@/src/db/schema";
@@ -22,13 +23,15 @@ export async function POST(req: Request) {
       brand,
       sku,
       productCode,
+      categoryIds = [],
+      // backward compat: accept old single categoryId too
       categoryId,
       features = [],
       specs = [],
       techspecs = [],
       diTerms = [],
       bannerImageUrl = "",
-      images = [], // ✅ ADD THIS (gallery images)
+      images = [],
       content,
       isFeatured = false,
       isNew = false,
@@ -37,16 +40,24 @@ export async function POST(req: Request) {
       relatedCategories = [],
     } = body;
 
+    // Build final category IDs array (support both old and new format)
+    const finalCategoryIds: string[] =
+      categoryIds.length > 0
+        ? categoryIds
+        : categoryId
+          ? [categoryId]
+          : [];
+
     // ✅ Validation
-    if (!name || !slug || !categoryId) {
+    if (!name || !slug || finalCategoryIds.length === 0) {
       return Response.json(
-        { error: "Name, slug and category are required" },
+        { error: "Name, slug and at least one category are required" },
         { status: 400 }
       );
     }
 
     const result = await db.transaction(async (tx) => {
-      // 🔥 1. Insert Product
+      // 🔥 1. Insert Product (use first category as primary for backward compat)
       const [product] = await tx
         .insert(products)
         .values({
@@ -55,10 +66,10 @@ export async function POST(req: Request) {
           description,
           shortDescription,
           brand,
-          bannerImageUrl, // ✅ banner stored here
+          bannerImageUrl,
           sku,
           productCode,
-          categoryId,
+          categoryId: finalCategoryIds[0],
           content,
           pdfUrl,
           isFeatured: Boolean(isFeatured),
@@ -68,27 +79,35 @@ export async function POST(req: Request) {
 
       const productId = product.id;
 
-      if (body.distributors?.length > 0) {
-  await tx.insert(productDistributor).values(
-    body.distributors.map((distId: string) => ({
-      productId,
-      distributorsId: distId,
-    }))
-  );
-}
+      // 🔥 2. Insert product_categories junction rows
+      await tx.insert(productCategories).values(
+        finalCategoryIds.map((catId: string) => ({
+          productId,
+          categoryId: catId,
+        }))
+      );
 
-      // 🔥 2. Insert Gallery Images (MULTIPLE)
+      if (body.distributors?.length > 0) {
+        await tx.insert(productDistributor).values(
+          body.distributors.map((distId: string) => ({
+            productId,
+            distributorsId: distId,
+          }))
+        );
+      }
+
+      // 🔥 3. Insert Gallery Images (MULTIPLE)
       if (images.length > 0) {
         await tx.insert(productImages).values(
           images.map((img: string, i: number) => ({
             productId,
             imageUrl: img,
-            isPrimary: i === 0, // first = primary
+            isPrimary: i === 0,
           }))
         );
       }
 
-      // 🔥 3. ALSO insert banner into images (optional but recommended)
+      // 🔥 4. ALSO insert banner into images
       if (bannerImageUrl) {
         await tx.insert(productImages).values({
           productId,
@@ -134,17 +153,18 @@ export async function POST(req: Request) {
         );
       }
 
-      // 🔗 Related Categories or Related Products -> save valid related product IDs
-      const relatedProducts: string[] = body.relatedProducts || [];
-      const relatedCategories: string[] = body.relatedCategories || [];
+      // 🔗 Related Categories or Related Products
+      const relatedProductsList: string[] = body.relatedProducts || [];
+      const relatedCategoriesList: string[] = body.relatedCategories || [];
       const relatedRows: { productId: string; relatedProductId: string }[] = [];
 
-      if (relatedCategories.length > 0) {
-        for (const categoryId of relatedCategories) {
+      if (relatedCategoriesList.length > 0) {
+        for (const catId of relatedCategoriesList) {
           const categoryProducts = await tx
             .select({ id: products.id })
             .from(products)
-            .where(eq(products.categoryId, categoryId));
+            .innerJoin(productCategories, eq(productCategories.productId, products.id))
+            .where(eq(productCategories.categoryId, catId));
 
           categoryProducts
             .filter((productRow) => productRow.id !== productId)
@@ -156,9 +176,9 @@ export async function POST(req: Request) {
               });
             });
         }
-      } else if (relatedProducts.length > 0) {
+      } else if (relatedProductsList.length > 0) {
         relatedRows.push(
-          ...relatedProducts.map((relatedProductId: string) => ({
+          ...relatedProductsList.map((relatedProductId: string) => ({
             productId,
             relatedProductId,
           })),
